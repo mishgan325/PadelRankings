@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <Spinner
+        android:id="@+id/activity_pss_1player"
+        android:layout_width="364dp"
+        android:layout_height="35dp"
+        android:layout_marginTop="16dp"
+        android:entries="@array/player_counts"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <Spinner
+        android:id="@+id/activity_pss_2player"
+        android:layout_width="364dp"
+        android:layout_height="35dp"
+        android:layout_marginTop="16dp"
+        android:entries="@array/player_counts"
+        app:layout_constraintTop_toBottomOf="@+id/activity_pss_1player"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <Spinner
+        android:id="@+id/activity_pss_3player"
+        android:layout_width="364dp"
+        android:layout_height="35dp"
+        android:layout_marginTop="16dp"
+        android:entries="@array/player_counts"
+        app:layout_constraintTop_toBottomOf="@+id/activity_pss_2player"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <Spinner
+        android:id="@+id/activity_pss_4player"
+        android:layout_width="364dp"
+        android:layout_height="35dp"
+        android:layout_marginTop="16dp"
+        android:entries="@array/player_counts"
+        app:layout_constraintTop_toBottomOf="@+id/activity_pss_3player"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <Spinner
+        android:id="@+id/activity_pss_5player"
+        android:layout_width="364dp"
+        android:layout_height="35dp"
+        android:layout_marginTop="16dp"
+        android:entries="@array/player_counts"
+        app:layout_constraintTop_toBottomOf="@+id/activity_pss_4player"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <Spinner
+        android:id="@+id/activity_pss_6player"
+        android:layout_width="364dp"
+        android:layout_height="35dp"
+        android:layout_marginTop="16dp"
+        android:entries="@array/player_counts"
+        app:layout_constraintTop_toBottomOf="@+id/activity_pss_5player"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <Spinner
+        android:id="@+id/activity_pss_7player"
+        android:layout_width="364dp"
+        android:layout_height="35dp"
+        android:layout_marginTop="16dp"
+        android:entries="@array/player_counts"
+        app:layout_constraintTop_toBottomOf="@+id/activity_pss_6player"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <Spinner
+        android:id="@+id/activity_pss_8player"
+        android:layout_width="364dp"
+        android:layout_height="35dp"
+        android:layout_marginTop="16dp"
+        android:entries="@array/player_counts"
+        app:layout_constraintTop_toBottomOf="@id/activity_pss_7player"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <Button
+        android:id="@+id/activity_pss_startButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="28dp"
+        android:text="Начать"
+        android:onClick="startGame"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

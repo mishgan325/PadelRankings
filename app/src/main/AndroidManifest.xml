@@ -21,9 +21,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity android:name=".PlayerActivity">
         </activity>
+
         <activity android:name=".ShowRankActivity">
+        </activity>
+
+        <activity android:name=".PlaySessionSettingsActivity">
+        </activity>
+
+        <activity android:name=".PlaySessionGameActivity">
         </activity>
     </application>
 
