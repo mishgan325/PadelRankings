@@ -28,20 +28,9 @@
         android:layout_height="wrap_content"
         android:hint="Введите рейтинг"
         app:layout_constraintTop_toBottomOf="@+id/activity_player_name_input"
-        app:layout_constraintBottom_toTopOf="@+id/activity_player_saveButton"
+        app:layout_constraintBottom_toTopOf="@+id/activity_player_deleteButton"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
-    <Button
-        android:id="@+id/activity_player_saveButton"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Сохранить"
-        android:onClick="save"
-        app:layout_constraintHorizontal_weight="1"
-        app:layout_constraintTop_toBottomOf="@+id/activity_player_rank_input"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/activity_player_deleteButton"
-        />
     <Button
         android:id="@+id/activity_player_deleteButton"
         android:layout_width="0dp"
@@ -50,7 +39,18 @@
         android:onClick="delete"
         app:layout_constraintHorizontal_weight="1"
         app:layout_constraintTop_toBottomOf="@+id/activity_player_rank_input"
-        app:layout_constraintLeft_toRightOf="@+id/activity_player_saveButton"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/activity_player_saveButton"
+        />
+    <Button
+        android:id="@+id/activity_player_saveButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Сохранить"
+        android:onClick="save"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintTop_toBottomOf="@+id/activity_player_rank_input"
+        app:layout_constraintLeft_toRightOf="@+id/activity_player_deleteButton"
         app:layout_constraintRight_toRightOf="parent"
         />
 </androidx.constraintlayout.widget.ConstraintLayout>
