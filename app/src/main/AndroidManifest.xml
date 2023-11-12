@@ -33,6 +33,9 @@
 
         <activity android:name=".PlaySessionGameActivity">
         </activity>
+
+        <activity android:name=".PlaySessionCheckActivity">
+        </activity>
     </application>
 
 </manifest>

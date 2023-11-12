@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="60dp">
+
+
+    <Spinner
+        android:id="@+id/activity_check_team1player1"
+        android:layout_width="145dp"
+        android:layout_height="30dp"
+        android:entries="@array/player_counts"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Spinner
+        android:id="@+id/activity_check_team1player2"
+        android:layout_width="145dp"
+        android:layout_height="30dp"
+        android:entries="@array/player_counts"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/activity_check_team1player1" />
+
+    <Spinner
+        android:id="@+id/activity_check_team2player1"
+        android:layout_width="145dp"
+        android:layout_height="30dp"
+        android:entries="@array/player_counts"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Spinner
+        android:id="@+id/activity_check_team2player2"
+        android:layout_width="145dp"
+        android:layout_height="30dp"
+        android:entries="@array/player_counts"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/activity_check_team2player1" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
+
+
+    <EditText
+        android:id="@+id/activity_check_score1"
+        android:layout_width="50dp"
+        android:layout_height="55dp"
+        android:ems="10"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toBottomOf="@+id/activity_check_team1player2"
+        app:layout_constraintEnd_toStartOf="@+id/guideline1"
+        app:layout_constraintStart_toEndOf="@+id/activity_check_team1player1"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/activity_check_score2"
+        android:layout_width="50dp"
+        android:layout_height="55dp"
+        android:ems="10"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toBottomOf="@+id/activity_check_team2player2"
+        app:layout_constraintEnd_toStartOf="@+id/activity_check_team2player1"
+        app:layout_constraintStart_toStartOf="@+id/guideline1"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

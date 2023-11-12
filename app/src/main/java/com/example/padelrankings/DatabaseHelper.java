@@ -1,5 +1,6 @@
 package com.example.padelrankings;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -94,6 +95,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
 
         return rank;
+    }
+
+    public void updateUserRank(String nick, int newRank) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_CURRENT_RANKING, newRank);
+
+        db.update(TABLE_NAME, values, COLUMN_NICK + "=?", new String[]{nick});
+        db.close();
     }
 
     @Override

@@ -5,57 +5,68 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <Spinner
-        android:id="@+id/activity_psg_team1player1"
-        android:layout_width="145dp"
-        android:layout_height="57dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="40dp"
-        android:entries="@array/player_counts"
+    <TextView
+        android:id="@+id/activity_psg_currentGame"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="Игра 1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-
     <Spinner
-        android:id="@+id/activity_psg_team1player2"
+        android:id="@+id/activity_check_team1player2"
         android:layout_width="145dp"
         android:layout_height="57dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="32dp"
         android:entries="@array/player_counts"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/activity_psg_team1player1" />
+        app:layout_constraintTop_toBottomOf="@+id/activity_check_team1player1" />
 
     <Spinner
-        android:id="@+id/activity_psg_team2player1"
+        android:id="@+id/activity_check_team1player1"
         android:layout_width="145dp"
         android:layout_height="57dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:entries="@array/player_counts"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/activity_psg_currentGame" />
+
+    <Spinner
+        android:id="@+id/activity_check_team2player1"
+        android:layout_width="145dp"
+        android:layout_height="57dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:entries="@array/player_counts"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/activity_psg_currentGame" />
 
     <Spinner
-        android:id="@+id/activity_psg_team2player2"
+        android:id="@+id/activity_check_team2player2"
         android:layout_width="145dp"
         android:layout_height="57dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="16dp"
         android:entries="@array/player_counts"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/activity_psg_team2player1" />
+        app:layout_constraintTop_toBottomOf="@+id/activity_check_team2player1" />
 
     <EditText
-        android:id="@+id/activity_psg_team1score"
+        android:id="@+id/activity_check_score"
         android:layout_width="71dp"
         android:layout_height="55dp"
         android:layout_marginStart="88dp"
         android:layout_marginTop="28dp"
         android:ems="10"
         android:inputType="number"
+        android:textAlignment="center"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/activity_psg_team1player2" />
+        app:layout_constraintTop_toBottomOf="@+id/activity_check_team1player2" />
 
     <EditText
         android:id="@+id/activity_psg_team2score"
@@ -65,8 +76,9 @@
         android:layout_marginEnd="88dp"
         android:ems="10"
         android:inputType="number"
+        android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/activity_psg_team2player2" />
+        app:layout_constraintTop_toBottomOf="@+id/activity_check_team2player2" />
 
     <Button
         android:id="@+id/activity_psg_submitButton"
@@ -77,7 +89,7 @@
         android:onClick="submitScore"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/activity_psg_team1score" />
+        app:layout_constraintTop_toBottomOf="@+id/activity_check_score" />
 
     <Button
         android:id="@+id/activity_psg_escapeButton"
