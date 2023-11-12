@@ -63,6 +63,38 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         return nameList;
     }
+    public int getRankByNick(String nick) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+        int rank = -1;
+
+        try {
+            // Выполнение запроса к базе данных
+            cursor = db.query(
+                    TABLE_NAME,
+                    new String[]{COLUMN_CURRENT_RANKING}, // Замените COLUMN_SECOND_COLUMN на имя вашей второй колонки
+                    COLUMN_NICK + "=?",
+                    new String[]{nick},
+                    null,
+                    null,
+                    null
+            );
+
+            // Обработка результатов запроса
+            if (cursor != null && cursor.moveToFirst()) {
+                rank = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_CURRENT_RANKING));
+            }
+        } finally {
+            // Закрываем курсор, чтобы избежать утечек памяти
+            if (cursor != null) {
+                cursor.close();
+            }
+            // Закрываем базу данных
+            db.close();
+        }
+
+        return rank;
+    }
 
     @Override
     public void onCreate(SQLiteDatabase db) {

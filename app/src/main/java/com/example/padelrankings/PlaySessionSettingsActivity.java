@@ -1,9 +1,9 @@
 package com.example.padelrankings;
 
-
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -17,6 +17,7 @@ import java.util.ArrayList;
 public class PlaySessionSettingsActivity extends AppCompatActivity {
     private int selectedPlayersCount;
     private Spinner[] playerSpinners = new Spinner[8];
+
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,7 +63,7 @@ public class PlaySessionSettingsActivity extends AppCompatActivity {
         });
 
         builder.setPositiveButton("OK", (dialog, which) -> {
-            loadPlayersList(selectedPlayersCount);
+            loadPlayersList();
         });
 
         builder.setNegativeButton("Cancel", (dialog, which) -> {
@@ -72,12 +73,12 @@ public class PlaySessionSettingsActivity extends AppCompatActivity {
         builder.show();
     }
 
-    private void loadPlayersList(int numberOfPlayers) {
+    private void loadPlayersList() {
         DatabaseHelper dbHelper = new DatabaseHelper(this);
         ArrayList<String> nickList = dbHelper.getNicks();
         dbHelper.close();
 
-        if (numberOfPlayers > nickList.size()) {
+        if (selectedPlayersCount > nickList.size()) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage("Недостаточно игроков в БД")
                     .setPositiveButton("OK", (dialog, which) -> {
@@ -86,11 +87,10 @@ public class PlaySessionSettingsActivity extends AppCompatActivity {
             AlertDialog dialog = builder.create();
             dialog.show();
         }
-        updatePlayerSpinners(numberOfPlayers, nickList);
-
+        updatePlayerSpinners(nickList);
     }
 
-    private void updatePlayerSpinners(int selectedPlayersCount, ArrayList nickList) {
+    private void updatePlayerSpinners(ArrayList nickList) {
         for (int i = 0; i < playerSpinners.length; i++) {
             if (i < selectedPlayersCount) {
                 // Отобразить Spinner и установить ему данные
@@ -107,8 +107,20 @@ public class PlaySessionSettingsActivity extends AppCompatActivity {
         }
     }
 
+    private ArrayList<String> getPlayersList() {
+        ArrayList<String> playersList = new ArrayList<>();
+        for (int i = 0; i < selectedPlayersCount; i++) {
+            playersList.add(playerSpinners[i].getSelectedItem().toString());
+        }
+        return playersList;
+    }
+
     public void startGame(View view) {
-        startActivity(new Intent(PlaySessionSettingsActivity.this, PlaySessionGameActivity.class));
+        ArrayList<String> players = getPlayersList();
+        Log.d("Player list", players.toString());
+        Intent newGame = new Intent(PlaySessionSettingsActivity.this, PlaySessionGameActivity.class);
+        newGame.putExtra("players", new ArrayList<>(players));
+        startActivity(newGame);
     }
 
 
