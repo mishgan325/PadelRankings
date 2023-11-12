@@ -32,8 +32,8 @@ public class PlayerActivity extends AppCompatActivity {
         nickBox = findViewById(R.id.activity_player_nick_input);
         nameBox = findViewById(R.id.activity_player_name_input);
         rankBox = findViewById(R.id.activity_player_rank_input);
-        delButton = findViewById(R.id.activity_player_saveButton);
-        saveButton = findViewById(R.id.activity_player_deleteButton);
+        delButton = findViewById(R.id.activity_player_deleteButton);
+        saveButton = findViewById(R.id.activity_player_saveButton);
 
         sqlHelper = new DatabaseHelper(this);
         db = sqlHelper.getWritableDatabase();

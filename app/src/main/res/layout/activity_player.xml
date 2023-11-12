@@ -31,26 +31,26 @@
         app:layout_constraintBottom_toTopOf="@+id/activity_player_deleteButton"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
+
     <Button
         android:id="@+id/activity_player_deleteButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Удалить"
         android:onClick="delete"
+        android:text="Удалить"
         app:layout_constraintHorizontal_weight="1"
-        app:layout_constraintTop_toBottomOf="@+id/activity_player_rank_input"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@+id/activity_player_saveButton"
-        />
+        app:layout_constraintTop_toBottomOf="@+id/activity_player_rank_input" />
+
     <Button
         android:id="@+id/activity_player_saveButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Сохранить"
         android:onClick="save"
+        android:text="Сохранить"
         app:layout_constraintHorizontal_weight="1"
-        app:layout_constraintTop_toBottomOf="@+id/activity_player_rank_input"
         app:layout_constraintLeft_toRightOf="@+id/activity_player_deleteButton"
         app:layout_constraintRight_toRightOf="parent"
-        />
+        app:layout_constraintTop_toBottomOf="@+id/activity_player_rank_input" />
 </androidx.constraintlayout.widget.ConstraintLayout>
