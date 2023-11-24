@@ -5,8 +5,15 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.Environment;
 
 import java.util.ArrayList;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
@@ -106,6 +113,92 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
     }
 
+
+    public boolean exportData(String fileName) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
+
+        // Папка приложения в директории Downloads
+        File appFolder = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "PadelRankings");
+        if (!appFolder.exists()) {
+            appFolder.mkdirs();
+        }
+
+        try (FileWriter writer = new FileWriter(new File(appFolder, fileName))) {
+            // Запись заголовков столбцов
+            for (String columnName : cursor.getColumnNames()) {
+                writer.write(columnName + "\t");
+            }
+            writer.write("\n");
+
+            // Запись данных
+            while (cursor.moveToNext()) {
+                for (int i = 0; i < cursor.getColumnCount(); i++) {
+                    writer.write(cursor.getString(i) + "\t");
+                }
+                writer.write("\n");
+            }
+
+            return true;  // Успешное выполнение
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;  // Ошибка
+        } finally {
+            cursor.close();
+        }
+    }
+
+
+    public boolean importData(String filePath) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            db.beginTransaction();
+            // Пропускаем первую строку, так как она содержит заголовки столбцов
+            String headerLine = reader.readLine();
+            if (headerLine == null) {
+                // Файл пустой
+                return false;
+            }
+
+            String[] headerColumns = headerLine.split("\t");
+            if (headerColumns.length != 4 || !headerColumns[0].equals(COLUMN_ID) ||
+                    !headerColumns[1].equals(COLUMN_NICK) || !headerColumns[2].equals(COLUMN_NAME) ||
+                    !headerColumns[3].equals(COLUMN_CURRENT_RANKING)) {
+                // Некорректный формат файла
+                return false;
+            }
+
+            while ((line = reader.readLine()) != null) {
+                String[] values = line.split("\t");
+
+                if (values.length == 4) {
+                    ContentValues contentValues = new ContentValues();
+                    contentValues.put(COLUMN_NICK, values[1]);
+                    contentValues.put(COLUMN_NAME, values[2]);
+                    try {
+                        contentValues.put(COLUMN_CURRENT_RANKING, Integer.parseInt(values[3]));
+                    } catch (NumberFormatException e) {
+                        // Некорректное значение для INTEGER
+                        return false;
+                    }
+
+                    db.insert(TABLE_NAME, null, contentValues);
+                } else {
+                    // Некорректное количество значений в строке
+                    return false;
+                }
+            }
+            db.setTransactionSuccessful();
+
+            return true;  // Успешное выполнение
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;  // Ошибка
+        } finally {
+            db.endTransaction();
+        }
+    }
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(CREATE_TABLE_SQL);

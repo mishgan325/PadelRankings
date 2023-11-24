@@ -16,6 +16,10 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class ShowRankActivity extends AppCompatActivity {
 
@@ -23,6 +27,8 @@ public class ShowRankActivity extends AppCompatActivity {
     private SQLiteDatabase db;
     private Cursor userCursor;
     private SimpleCursorAdapter userAdapter;
+    private Button importButton;
+    private Button exportButton;
 
     ListView userList;
 
@@ -33,6 +39,8 @@ public class ShowRankActivity extends AppCompatActivity {
 
         databaseHelper = new DatabaseHelper(getApplicationContext());
         userList = findViewById(R.id.activity_show_rank_list);
+        importButton = findViewById(R.id.activity_show_rank_importButton);
+        exportButton = findViewById(R.id.activity_show_rank_exportButton);
 
         userList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -50,10 +58,30 @@ public class ShowRankActivity extends AppCompatActivity {
         // открываем подключение
         db = databaseHelper.getReadableDatabase();
 
-        userCursor = db.rawQuery("select * from " + DatabaseHelper.TABLE_NAME, null);
+        userCursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_NAME + " ORDER BY " + DatabaseHelper.COLUMN_CURRENT_RANKING + " DESC", null);
         String[] headers = new String[]{DatabaseHelper.COLUMN_NICK, DatabaseHelper.COLUMN_CURRENT_RANKING};
         userAdapter = new SimpleCursorAdapter(this, android.R.layout.two_line_list_item,
                 userCursor, headers, new int[]{android.R.id.text1, android.R.id.text2}, 0);
         userList.setAdapter(userAdapter);
+    }
+
+    public void importData(View view) {
+        Toast.makeText(this, "Тут будет импорт", Toast.LENGTH_SHORT).show();
+    }
+    public void exportData(View view) {
+        Date currentDate = new Date();
+
+        // Форматируем дату в строку с помощью SimpleDateFormat
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
+        String formattedDate = dateFormat.format(currentDate);
+
+        // Создаем название файла с текущей датой
+        String fileName = "PadelRankingsExported_" + formattedDate + ".txt";
+
+        if (databaseHelper.exportData(fileName)) {
+            Toast.makeText(this, "БД экспортирована успешно", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "При экспорте возникла ошибка", Toast.LENGTH_SHORT).show();
+        }
     }
 }
