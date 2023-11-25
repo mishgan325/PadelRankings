@@ -169,6 +169,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 return false;
             }
 
+            db.execSQL("DELETE FROM " + DatabaseHelper.TABLE_NAME);
             while ((line = reader.readLine()) != null) {
                 String[] values = line.split("\t");
 

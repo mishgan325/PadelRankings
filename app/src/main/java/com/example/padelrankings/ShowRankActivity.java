@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.os.Environment;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
@@ -21,8 +23,14 @@ import android.widget.Toast;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Bundle;
+
 public class ShowRankActivity extends AppCompatActivity {
 
+    private static final int READ_REQUEST_CODE = 42;
     private DatabaseHelper databaseHelper;
     private SQLiteDatabase db;
     private Cursor userCursor;
@@ -66,8 +74,32 @@ public class ShowRankActivity extends AppCompatActivity {
     }
 
     public void importData(View view) {
-        Toast.makeText(this, "Тут будет импорт", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        Uri uri = Uri.parse(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath());
+        intent.setDataAndType(uri, "text/plain");
+
+        startActivityForResult(intent, READ_REQUEST_CODE);
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == READ_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            if (data != null) {
+                Uri uri = data.getData();
+                String filePath = uri.getPath();  // Получить путь к выбранному файлу
+
+                if (databaseHelper.importData(filePath.replace("/document/raw:", ""))) {
+                    Toast.makeText(this, "Импорт произведен успешно", Toast.LENGTH_SHORT).show();
+                    recreate();
+                } else {
+                    Toast.makeText(this, "При импорте возникла ошибка", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+    }
+
     public void exportData(View view) {
         Date currentDate = new Date();
 
