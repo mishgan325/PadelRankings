@@ -27,6 +27,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:hint="Введите рейтинг"
+        android:inputType="number"
         app:layout_constraintTop_toBottomOf="@+id/activity_player_name_input"
         app:layout_constraintBottom_toTopOf="@+id/activity_player_deleteButton"
         app:layout_constraintLeft_toLeftOf="parent"
