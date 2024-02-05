@@ -36,7 +36,7 @@ public class ShowRankAdapter extends ArrayAdapter<Player> {
         Player player = players.get(position);
 
         placeView.setText(String.valueOf(position+1));
-        nickView.setText(player.getName());
+        nickView.setText(player.getNick());
         rankView.setText(String.valueOf(player.getRank()));
 
         return view;
