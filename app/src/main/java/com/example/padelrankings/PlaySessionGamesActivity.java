@@ -1,44 +1,46 @@
 package com.example.padelrankings;
 
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 
-public class PlaySessionCheckActivity extends AppCompatActivity {
+public class PlaySessionGamesActivity extends AppCompatActivity {
 
     private ArrayList<GameData> games = new ArrayList<>();
     private ArrayList<String> players = new ArrayList<>();
 
     private RecyclerView checkList;
+    CheckSessionAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_play_session_check);
+        setContentView(R.layout.activity_play_session_games);
 
         Intent intent = getIntent();
-        games = (ArrayList<GameData>) intent.getSerializableExtra("games");
+        games = new ArrayList<>();
         players = intent.getStringArrayListExtra("players");
+
+
+        Log.d("Players:", players.toString());
+
+        games.add(new GameData(players.get(0), players.get(0), players.get(0), players.get(0), 0, 0));
 
         checkList = findViewById(R.id.activity_check_recyclerView);
 
-        CheckSessionAdapter adapter = new CheckSessionAdapter(this, games);
+        adapter = new CheckSessionAdapter(this, games);
 
         adapter.setNickList(players);
 
@@ -47,8 +49,7 @@ public class PlaySessionCheckActivity extends AppCompatActivity {
 
     }
 
-    private ArrayList<GameData> parseData() {
-        ArrayList<GameData> parsedGames = new ArrayList<>();
+    private void updateGameData() {
         for (int i = 0; i < checkList.getChildCount(); i++) {
             View view = checkList.getChildAt(i);
             Spinner player1 = view.findViewById(R.id.activity_check_team1player1);
@@ -67,14 +68,18 @@ public class PlaySessionCheckActivity extends AppCompatActivity {
             sc1 = Integer.parseInt(score1.getText().toString());
             sc2 = Integer.parseInt(score2.getText().toString());
 
-            parsedGames.add(new GameData(p1, p2, p3, p4, sc1, sc2));
-        }
+            games.get(i).setTeam1player1(p1);
+            games.get(i).setTeam1player2(p2);
+            games.get(i).setTeam2player1(p3);
+            games.get(i).setTeam2player2(p4);
+            games.get(i).setTeam1score(sc1);
+            games.get(i).setTeam2score(sc2);
 
-        return parsedGames;
+        }
     }
 
     public void finishSession(View view) {
-        games = parseData();
+        updateGameData();
 
         for (int i = 0; i < games.size(); i++) {
             Log.d("finalResults", games.get(i).returnData());
@@ -107,4 +112,25 @@ public class PlaySessionCheckActivity extends AppCompatActivity {
         }
     }
 
+    public void addGame(View view) {
+        updateGameData();
+
+        for (int i = 0; i < games.size(); i++) {
+            Log.d("tmp", games.get(i).returnData());
+        }
+
+        games.add(new GameData(players.get(0), players.get(0), players.get(0), players.get(0), 0, 0));
+        adapter.notifyDataSetChanged();
+    }
+
+    public void removeGame(View view) {
+        if(games.size() > 1) {
+            updateGameData();
+            games.remove(games.size()-1);
+            adapter.notifyDataSetChanged();
+        }
+        else {
+            Toast.makeText(this, "Минимум 1 игра", Toast.LENGTH_SHORT).show();
+        }
+    }
 }

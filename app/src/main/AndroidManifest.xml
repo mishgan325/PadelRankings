@@ -34,10 +34,7 @@
         <activity android:name=".PlaySessionSettingsActivity">
         </activity>
 
-        <activity android:name=".PlaySessionGameActivity">
-        </activity>
-
-        <activity android:name=".PlaySessionCheckActivity">
+        <activity android:name=".PlaySessionGamesActivity">
         </activity>
     </application>
 

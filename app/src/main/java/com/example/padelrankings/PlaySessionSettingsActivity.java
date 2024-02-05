@@ -118,7 +118,7 @@ public class PlaySessionSettingsActivity extends AppCompatActivity {
     public void startGame(View view) {
         ArrayList<String> players = getPlayersList();
         Log.d("Player list", players.toString());
-        Intent newGame = new Intent(PlaySessionSettingsActivity.this, PlaySessionGameActivity.class);
+        Intent newGame = new Intent(PlaySessionSettingsActivity.this, PlaySessionGamesActivity.class);
         newGame.putExtra("players", new ArrayList<>(players));
         startActivity(newGame);
     }
