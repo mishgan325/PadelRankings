@@ -21,7 +21,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -34,11 +36,13 @@ public class ShowRankActivity extends AppCompatActivity {
     private DatabaseHelper databaseHelper;
     private SQLiteDatabase db;
     private Cursor userCursor;
-    private SimpleCursorAdapter userAdapter;
+    private ShowRankAdapter userAdapter;
     private Button importButton;
     private Button exportButton;
 
     ListView userList;
+
+    List<Player> playerList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,28 +54,65 @@ public class ShowRankActivity extends AppCompatActivity {
         importButton = findViewById(R.id.activity_show_rank_importButton);
         exportButton = findViewById(R.id.activity_show_rank_exportButton);
 
-        userList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(getApplicationContext(), PlayerActivity.class);
-                intent.putExtra("id", id);
-                startActivity(intent);
-            }
-        });
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        // открываем подключение
-        db = databaseHelper.getReadableDatabase();
 
-        userCursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_NAME + " ORDER BY " + DatabaseHelper.COLUMN_CURRENT_RANKING + " DESC", null);
-        String[] headers = new String[]{DatabaseHelper.COLUMN_NICK, DatabaseHelper.COLUMN_CURRENT_RANKING};
-        userAdapter = new SimpleCursorAdapter(this, android.R.layout.two_line_list_item,
-                userCursor, headers, new int[]{android.R.id.text1, android.R.id.text2}, 0);
+        playerList = new ArrayList<>();
+        userAdapter = new ShowRankAdapter(this, R.layout.player_list_item_layout, playerList);
+
+        userList = findViewById(R.id.activity_show_rank_list);
+
         userList.setAdapter(userAdapter);
+
+        fillPlayerListFromDatabase();
+
+        userList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // Получаем объект Player, соответствующий нажатому элементу списка
+                Player clickedPlayer = playerList.get(position);
+
+                // Получаем id нажатого игрока
+                long playerId = clickedPlayer.getId();
+
+                Log.d("Player id:", String.valueOf(playerId));
+
+                Intent intent = new Intent(getApplicationContext(), PlayerActivity.class);
+                intent.putExtra("id", playerId);
+                startActivity(intent);
+            }
+        });
     }
+
+    private void fillPlayerListFromDatabase() {
+        db = databaseHelper.getReadableDatabase();
+        userCursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_NAME + " ORDER BY " + DatabaseHelper.COLUMN_CURRENT_RANKING + " DESC", null);
+        if (userCursor.moveToFirst()) {
+            do {
+                // Получение данных из курсора
+                int id = userCursor.getInt(0);
+                String nick = userCursor.getString(1);
+                String name = userCursor.getString(2);
+                int rank = userCursor.getInt(3);
+
+
+
+                Player player = new Player(id, nick, name, rank);
+
+                Log.d("Player list:", player.toString());
+
+                playerList.add(player);
+            } while (userCursor.moveToNext());
+        }
+        userCursor.close();
+
+        // Уведомляем адаптер о изменениях в данных
+        userAdapter.notifyDataSetChanged();
+    }
+
 
     public void importData(View view) {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
