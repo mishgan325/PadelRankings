@@ -80,7 +80,7 @@ public class ShowRankActivity extends AppCompatActivity {
 
                 Log.d("Player id:", String.valueOf(playerId));
 
-                Intent intent = new Intent(getApplicationContext(), PlayerActivity.class);
+                Intent intent = new Intent(getApplicationContext(), PlayerStatsActivity.class);
                 intent.putExtra("id", playerId);
                 startActivity(intent);
             }

@@ -200,6 +200,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             db.endTransaction();
         }
     }
+
+    public String findNicknameById(long id) {
+        String nickname = null;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(TABLE_NAME, new String[]{COLUMN_NICK}, COLUMN_ID + "=?",
+                new String[]{String.valueOf(id)}, null, null, null);
+        if (cursor != null && cursor.moveToFirst()) {
+            nickname = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NICK));
+            cursor.close();
+        }
+        db.close();
+        return nickname;
+    }
+
+
+
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(CREATE_TABLE_SQL);

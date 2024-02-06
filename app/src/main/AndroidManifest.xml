@@ -25,6 +25,9 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".PlayerStatsActivity">
+        </activity>
+
         <activity android:name=".PlayerActivity">
         </activity>
 
