@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Environment;
+import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -214,6 +215,52 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return nickname;
     }
 
+    public void addPlayer(String nickname, String name, int currentRanking) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_NICK, nickname);
+        values.put(COLUMN_NAME, name);
+        values.put(COLUMN_CURRENT_RANKING, currentRanking);
+
+        // Вставляем новую запись в базу данных
+        long newRowId = db.insert(TABLE_NAME, null, values);
+
+        // Проверяем успешность выполнения операции
+        if (newRowId == -1) {
+            // Произошла ошибка при добавлении записи
+            Log.e("PlayerDBHelper", "Error inserting player into database");
+        } else {
+            // Запись успешно добавлена
+            Log.d("PlayerDBHelper", "Player inserted into database with row ID: " + newRowId);
+        }
+
+        // Закрываем базу данных после использования
+        db.close();
+    }
+
+    public void updatePlayer(String nickname, String name, int currentRanking, long userId) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_NICK, nickname);
+        values.put(COLUMN_NAME, name);
+        values.put(COLUMN_CURRENT_RANKING, currentRanking);
+
+
+        db.update(DatabaseHelper.TABLE_NAME, values, DatabaseHelper.COLUMN_ID + "=" + userId, null);
+
+
+            // Закрываем базу данных после использования
+        db.close();
+    }
+
+    public void deletePlayerById(long playerId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(DatabaseHelper.TABLE_NAME, "_id = ?", new String[]{String.valueOf(playerId)});
+    }
 
 
     @Override

@@ -12,6 +12,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import java.util.ArrayList;
+
 public class PlayerActivity extends AppCompatActivity {
 
     EditText nickBox;
@@ -20,9 +22,7 @@ public class PlayerActivity extends AppCompatActivity {
     Button delButton;
     Button saveButton;
 
-    DatabaseHelper sqlHelper;
-    SQLiteDatabase db;
-    Cursor userCursor;
+    DatabaseHelper databaseHelper;
     long userId=0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,8 +35,7 @@ public class PlayerActivity extends AppCompatActivity {
         delButton = findViewById(R.id.activity_player_deleteButton);
         saveButton = findViewById(R.id.activity_player_saveButton);
 
-        sqlHelper = new DatabaseHelper(this);
-        db = sqlHelper.getWritableDatabase();
+        databaseHelper = new DatabaseHelper(this);
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -44,7 +43,7 @@ public class PlayerActivity extends AppCompatActivity {
         }
 
         if (userId > 0) {
-            userCursor = db.rawQuery("select * from " + DatabaseHelper.TABLE_NAME + " where " +
+            Cursor userCursor = databaseHelper.getWritableDatabase().rawQuery("select * from " + DatabaseHelper.TABLE_NAME + " where " +
                     DatabaseHelper.COLUMN_ID + "=?", new String[]{String.valueOf(userId)});
             userCursor.moveToFirst();
             nickBox.setText(userCursor.getString(1));
@@ -57,25 +56,29 @@ public class PlayerActivity extends AppCompatActivity {
     }
 
     public void save(View view){
-        ContentValues cv = new ContentValues();
-        cv.put(DatabaseHelper.COLUMN_NICK, nickBox.getText().toString());
-        cv.put(DatabaseHelper.COLUMN_NAME, nameBox.getText().toString());
-        cv.put(DatabaseHelper.COLUMN_CURRENT_RANKING, Integer.parseInt(rankBox.getText().toString()));
-
         if (userId > 0) {
-            db.update(DatabaseHelper.TABLE_NAME, cv, DatabaseHelper.COLUMN_ID + "=" + userId, null);
+            databaseHelper.updatePlayer(nickBox.getText().toString(), nameBox.getText().toString(), Integer.parseInt(rankBox.getText().toString()), userId);
         } else {
-            db.insert(DatabaseHelper.TABLE_NAME, null, cv);
+            databaseHelper.addPlayer(nickBox.getText().toString(), nameBox.getText().toString(), Integer.parseInt(rankBox.getText().toString()));
+
+//
+//
+//            PlayerDBHelper playerDBHelper = new PlayerDBHelper(this);
+//            DatabaseHelper rankDBHelper = new DatabaseHelper(this);
+//
+//            ArrayList<String> nicks = rankDBHelper.getNicks();
+//
+//            for (String nick : nicks) {
+//                playerDBHelper.addPartnerToPlayer(nick, nickBox.getText().toString());
+//            }
         }
         goHome();
     }
     public void delete(View view){
-        db.delete(DatabaseHelper.TABLE_NAME, "_id = ?", new String[]{String.valueOf(userId)});
+        databaseHelper.deletePlayerById(userId);
         goHome();
     }
     private void goHome(){
-        // закрываем подключение
-        db.close();
         // переход к главной activity
         Intent intent = new Intent(this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
