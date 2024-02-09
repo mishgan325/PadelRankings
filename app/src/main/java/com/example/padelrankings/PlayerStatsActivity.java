@@ -14,14 +14,15 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class PlayerStatsActivity extends AppCompatActivity {
 
     long playerID;
     String playerNICK;
 
     private PlayerDBHelper playerDBHelper;
-    private SQLiteDatabase database;
-
     TextView title;
 
     @Override
@@ -43,67 +44,49 @@ public class PlayerStatsActivity extends AppCompatActivity {
         title.setText("Статистика " + playerNICK);
 
         playerDBHelper = new PlayerDBHelper(this);
-        database = playerDBHelper.getWritableDatabase();
 
-        fillTestData();
+//        fillTestData();
 
         displayData();
 
     }
 
-    private void fillTestData() {
-        // Пробные данные
-        String[] nicknames = {"Player1", "Player2", "Player3"};
-        String[] partners = {"Partner1", "Partner2", "Partner3"};
-        int[] games = {10, 15, 20};
-        int[] wins = {8, 10, 12};
-        int[] wonPoints = {100, 150, 200};
-        int[] lostPoints = {50, 70, 90};
-        int[] tiebreaks = {2, 3, 4};
-        int[] tiebreakWins = {1, 2, 3};
-
-        for (int i = 0; i < nicknames.length; i++) {
-            ContentValues values = new ContentValues();
-            values.put("nickname", nicknames[i]);
-            values.put("partner", partners[i]);
-            values.put("games", games[i]);
-            values.put("wins", wins[i]);
-            values.put("won_points", wonPoints[i]);
-            values.put("lost_points", lostPoints[i]);
-            values.put("tiebreaks", tiebreaks[i]);
-            values.put("tiebreak_wins", tiebreakWins[i]);
-            database.insert("PlayerStats", null, values);
-        }
-    }
 
     private void displayData() {
         // Получение ссылки на TableLayout
         TableLayout tableLayout = findViewById(R.id.activity_player_stats_table);
 
-        // Получение данных из БД
-        Cursor cursor = database.rawQuery("SELECT * FROM PlayerStats", null);
+        ArrayList<PlayerPartnerInfo> playerPartnerInfo = playerDBHelper.getPlayerPartnersInfo(playerNICK);
+        for (PlayerPartnerInfo info : playerPartnerInfo) {
 
-        // Проход по результатам запроса
-        while (cursor.moveToNext()) {
-            // Создание новой строки
+
             TableRow row = new TableRow(this);
 
-            // Получение данных из курсора
-            String nickname = cursor.getString(cursor.getColumnIndexOrThrow("nickname"));
-            String partner = cursor.getString(cursor.getColumnIndexOrThrow("partner"));
-            int games = cursor.getInt(cursor.getColumnIndexOrThrow("games"));
-            int wins = cursor.getInt(cursor.getColumnIndexOrThrow("wins"));
-            int wonPoints = cursor.getInt(cursor.getColumnIndexOrThrow("won_points"));
-            int lostPoints = cursor.getInt(cursor.getColumnIndexOrThrow("lost_points"));
-            int tiebreaks = cursor.getInt(cursor.getColumnIndexOrThrow("tiebreaks"));
-            int tiebreakWins = cursor.getInt(cursor.getColumnIndexOrThrow("tiebreak_wins"));
+
+            String partner = info.getPartner();
+            int games = info.getGames();
+            int wins = info.getWins();
+            int wonPoints = info.getWonPoints();
+            int lostPoints = info.getLostPoints();
+            int tiebreaks = info.getTiebreaks();
+            int tiebreakWins = info.getTiebreakWins();
 
             TextView textView1 = createTextView(partner);
             TextView textView2 = createTextView(String.valueOf(games));
-            TextView textView3 = createTextView(String.valueOf(wins/games));
+            TextView textView3;
+            if (games != 0) {
+                textView3 = createTextView(String.format("%.0f%%", ((double) wins / games) * 100));
+            } else {
+                textView3 = createTextView("0");
+            }
             TextView textView4 = createTextView(wonPoints + "-" + lostPoints);
             TextView textView5 = createTextView(String.valueOf(tiebreaks));
-            TextView textView6 = createTextView(String.valueOf(tiebreakWins/tiebreaks));
+            TextView textView6;
+            if (tiebreaks != 0) {
+                textView6 = createTextView(String.format("%.0f%%", ((double) tiebreakWins / tiebreaks) * 100));
+            } else {
+                textView6 = createTextView("0");
+            }
 
             row.addView(textView1);
             row.addView(textView2);
@@ -114,8 +97,6 @@ public class PlayerStatsActivity extends AppCompatActivity {
 
             tableLayout.addView(row);
         }
-
-        cursor.close();
     }
 
     private TextView createTextView(String text) {

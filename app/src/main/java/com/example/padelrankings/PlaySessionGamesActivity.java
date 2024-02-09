@@ -24,6 +24,8 @@ public class PlaySessionGamesActivity extends AppCompatActivity {
     private RecyclerView checkList;
     CheckSessionAdapter adapter;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,8 +94,13 @@ public class PlaySessionGamesActivity extends AppCompatActivity {
 
         GameSession gameSession = new GameSession(players, ranks);
 
+        PlayerDBHelper playerDBHelper = new PlayerDBHelper(this);
+
+
         for(GameData game: games) {
             gameSession.runGame(game);
+            playerDBHelper.updateGameData(game.getTeam1player1(), game.getTeam1player2(), game.getTeam1score(), game.getTeam2score());
+            playerDBHelper.updateGameData(game.getTeam2player1(), game.getTeam2player2(), game.getTeam2score(), game.getTeam1score());
         }
         ArrayList<Player> finalPlayers = gameSession.getPlayers();
 

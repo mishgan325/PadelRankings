@@ -251,9 +251,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
         db.update(DatabaseHelper.TABLE_NAME, values, DatabaseHelper.COLUMN_ID + "=" + userId, null);
-
-
-            // Закрываем базу данных после использования
+        
         db.close();
     }
 

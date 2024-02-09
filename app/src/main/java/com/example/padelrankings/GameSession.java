@@ -67,8 +67,4 @@ public class GameSession {
         return players;
     }
 
-//    public void game(1, 2, 3, 4 , c1, c2) {
-//
-//    }
-
 }

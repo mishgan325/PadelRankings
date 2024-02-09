@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class PlayerActivity extends AppCompatActivity {
@@ -23,6 +24,7 @@ public class PlayerActivity extends AppCompatActivity {
     Button saveButton;
 
     DatabaseHelper databaseHelper;
+    PlayerDBHelper playerDBHelper;
     long userId=0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,18 +61,13 @@ public class PlayerActivity extends AppCompatActivity {
         if (userId > 0) {
             databaseHelper.updatePlayer(nickBox.getText().toString(), nameBox.getText().toString(), Integer.parseInt(rankBox.getText().toString()), userId);
         } else {
-            databaseHelper.addPlayer(nickBox.getText().toString(), nameBox.getText().toString(), Integer.parseInt(rankBox.getText().toString()));
+            playerDBHelper = new PlayerDBHelper(this);
+            ArrayList<String> playersList =databaseHelper.getNicks();
+            for (String player : playersList) {
+                playerDBHelper.addPartnerToPlayer(player, nickBox.getText().toString());
+            }
 
-//
-//
-//            PlayerDBHelper playerDBHelper = new PlayerDBHelper(this);
-//            DatabaseHelper rankDBHelper = new DatabaseHelper(this);
-//
-//            ArrayList<String> nicks = rankDBHelper.getNicks();
-//
-//            for (String nick : nicks) {
-//                playerDBHelper.addPartnerToPlayer(nick, nickBox.getText().toString());
-//            }
+            databaseHelper.addPlayer(nickBox.getText().toString(), nameBox.getText().toString(), Integer.parseInt(rankBox.getText().toString()));
         }
         goHome();
     }
