@@ -16,8 +16,8 @@ public class PlayerDBHelper extends SQLiteOpenHelper {
     private static final String TABLE_NAME = "PlayerStats";
 
     public static final String COLUMN_ID = "id";
-    public static final String COLUMN_NICKNAME = "nickname";
-    public static final String COLUMN_PARTNER = "partner";
+    public static final String COLUMN_PLAYER1 = "player1";
+    public static final String COLUMN_PLAYER2 = "player2";
     public static final String COLUMN_GAMES = "games";
     public static final String COLUMN_WINS = "wins";
     public static final String COLUMN_WON_POINTS = "won_points";
@@ -33,37 +33,32 @@ public class PlayerDBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        // Создание таблицы
         String SQL_CREATE_PLAYER_STATS_TABLE = "CREATE TABLE " + TABLE_NAME + " ("
-                + "id INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + "nickname TEXT NOT NULL, "
-                + "partner TEXT, "
-                + "games INTEGER DEFAULT 0, "
-                + "wins INTEGER DEFAULT 0, "
-                + "won_points INTEGER DEFAULT 0, "
-                + "lost_points INTEGER DEFAULT 0, "
-                + "tiebreaks INTEGER DEFAULT 0, "
-                + "tiebreak_wins INTEGER DEFAULT 0)";
+                + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + COLUMN_PLAYER1 + " TEXT NOT NULL, "
+                + COLUMN_PLAYER2 + " TEXT, "
+                + COLUMN_GAMES + " INTEGER DEFAULT 0, "
+                + COLUMN_WINS + " INTEGER DEFAULT 0, "
+                + COLUMN_WON_POINTS + " INTEGER DEFAULT 0, "
+                + COLUMN_LOST_POINTS + " INTEGER DEFAULT 0, "
+                + COLUMN_TIEBREAKS + " INTEGER DEFAULT 0, "
+                + COLUMN_TIEBREAK_WINS + " INTEGER DEFAULT 0)";
         db.execSQL(SQL_CREATE_PLAYER_STATS_TABLE);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // Обновление базы данных, если необходимо
-        // В данном примере просто удаляем старую таблицу и создаем новую
         db.execSQL("DROP TABLE IF EXISTS PlayerStats");
         onCreate(db);
     }
 
 
-    public void addPartnerToPlayer(String playerNickname, String partnerNickname) {
-        // Получение доступа к базе данных для записи
+    public void addPartnerToPlayer(String player1, String player2) {
         SQLiteDatabase db = this.getWritableDatabase();
 
-        // Подготовка данных для вставки в базу данных
         ContentValues values = new ContentValues();
-        values.put("nickname", playerNickname);
-        values.put("partner", partnerNickname);
+        values.put("player1", player1);
+        values.put("player2", player2);
 
         // Вставка строки в таблицу
         db.insert("PlayerStats", null, values);
@@ -77,7 +72,7 @@ public class PlayerDBHelper extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getReadableDatabase();
 
-        String selection = PlayerDBHelper.COLUMN_NICKNAME + " = ?";
+        String selection = PlayerDBHelper.COLUMN_PLAYER1 + " = ?";
         String[] selectionArgs = { nickname };
 
         Cursor cursor = db.query(
@@ -92,7 +87,7 @@ public class PlayerDBHelper extends SQLiteOpenHelper {
 
         while (cursor.moveToNext()) {
 
-            String partner = cursor.getString(cursor.getColumnIndexOrThrow(PlayerDBHelper.COLUMN_PARTNER));
+            String partner = cursor.getString(cursor.getColumnIndexOrThrow(PlayerDBHelper.COLUMN_PLAYER2));
             int games = cursor.getInt(cursor.getColumnIndexOrThrow(PlayerDBHelper.COLUMN_GAMES));
             int wins = cursor.getInt(cursor.getColumnIndexOrThrow(PlayerDBHelper.COLUMN_WINS));
             int wonPoints = cursor.getInt(cursor.getColumnIndexOrThrow(PlayerDBHelper.COLUMN_WON_POINTS));
@@ -106,7 +101,7 @@ public class PlayerDBHelper extends SQLiteOpenHelper {
 
         cursor.close();
 
-        selection = PlayerDBHelper.COLUMN_PARTNER + " = ?";
+        selection = PlayerDBHelper.COLUMN_PLAYER2 + " = ?";
         cursor = db.query(
                 PlayerDBHelper.TABLE_NAME,   // Таблица для запроса
                 null,                        // Все столбцы таблицы
@@ -119,7 +114,7 @@ public class PlayerDBHelper extends SQLiteOpenHelper {
 
         while (cursor.moveToNext()) {
 
-            String partner = cursor.getString(cursor.getColumnIndexOrThrow(PlayerDBHelper.COLUMN_NICKNAME));
+            String partner = cursor.getString(cursor.getColumnIndexOrThrow(PlayerDBHelper.COLUMN_PLAYER1));
             int games = cursor.getInt(cursor.getColumnIndexOrThrow(PlayerDBHelper.COLUMN_GAMES));
             int wins = cursor.getInt(cursor.getColumnIndexOrThrow(PlayerDBHelper.COLUMN_WINS));
             int wonPoints = cursor.getInt(cursor.getColumnIndexOrThrow(PlayerDBHelper.COLUMN_WON_POINTS));
@@ -140,14 +135,14 @@ public class PlayerDBHelper extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getWritableDatabase();
 
-        String request = "SELECT * FROM " + TABLE_NAME + " WHERE (nickname = ? AND partner = ?) OR (partner = ? AND nickname = ?)";
+        String request = "SELECT * FROM " + TABLE_NAME + " WHERE (" + COLUMN_PLAYER1 + " = ? AND " + COLUMN_PLAYER2 + " = ?) OR (" + COLUMN_PLAYER2 + " = ? AND " + COLUMN_PLAYER1 + " = ?)";
         Cursor cursor = db.rawQuery(request, new String[]{player1, player2, player2, player1});
 
         if (cursor != null && cursor.moveToFirst()) {
             ContentValues values = new ContentValues();
 
-            String nickname = cursor.getString(cursor.getColumnIndexOrThrow(PlayerDBHelper.COLUMN_NICKNAME));
-            String partner = cursor.getString(cursor.getColumnIndexOrThrow(PlayerDBHelper.COLUMN_PARTNER));
+            String nickname = cursor.getString(cursor.getColumnIndexOrThrow(PlayerDBHelper.COLUMN_PLAYER1));
+            String partner = cursor.getString(cursor.getColumnIndexOrThrow(PlayerDBHelper.COLUMN_PLAYER2));
             int games = cursor.getInt(cursor.getColumnIndexOrThrow(PlayerDBHelper.COLUMN_GAMES));
             int wins = cursor.getInt(cursor.getColumnIndexOrThrow(PlayerDBHelper.COLUMN_WINS));
             int prevWonPoints = cursor.getInt(cursor.getColumnIndexOrThrow(PlayerDBHelper.COLUMN_WON_POINTS));
@@ -155,8 +150,6 @@ public class PlayerDBHelper extends SQLiteOpenHelper {
             int tiebreaks = cursor.getInt(cursor.getColumnIndexOrThrow(PlayerDBHelper.COLUMN_TIEBREAKS));
             int tiebreakWins = cursor.getInt(cursor.getColumnIndexOrThrow(PlayerDBHelper.COLUMN_TIEBREAK_WINS));
 
-//            values.put("nickname", nickname);
-//            values.put("partner", partner);
             values.put("games", games+1);
             if (isWin(wonPoints, lostPoints)) {
                 values.put("wins", wins + 1);
@@ -170,7 +163,7 @@ public class PlayerDBHelper extends SQLiteOpenHelper {
                 }
             }
 
-            db.update(TABLE_NAME, values, "nickname = ? AND partner = ?", new String[]{nickname, partner});
+            db.update(TABLE_NAME, values, COLUMN_PLAYER1 + " = ? AND " + COLUMN_PLAYER2 + " = ?", new String[]{nickname, partner});
 
             Log.d("Database players info", "updated "+values);
 
