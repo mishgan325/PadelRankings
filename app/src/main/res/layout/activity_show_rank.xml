@@ -9,8 +9,9 @@
 
     <ListView
         android:id="@+id/activity_show_rank_list"
-        android:layout_width="311dp"
-        android:layout_height="564dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="60dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
