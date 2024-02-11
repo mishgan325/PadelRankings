@@ -165,13 +165,14 @@ public class PlayerDBHelper extends SQLiteOpenHelper {
 
             db.update(TABLE_NAME, values, COLUMN_PLAYER1 + " = ? AND " + COLUMN_PLAYER2 + " = ?", new String[]{nickname, partner});
 
-            Log.d("Database players info", "updated "+values);
+            Log.i("Database players info", "updated "+values);
 
+            db.close();
         } else {
-            Log.e("Database search", "404");
+            Log.i("Database search", "404, creating new pair");
+            addPartnerToPlayer(player1, player2);
+            updateGameData(player1, player2, wonPoints, lostPoints);
         }
-
-        db.close();
     }
 
     private boolean isTieBreak(int wonPoints, int lostPoints) {
