@@ -1,6 +1,9 @@
 package com.example.padelrankings;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.ContentValues;
 import android.content.Intent;
@@ -15,12 +18,19 @@ import android.widget.TableRow;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class PlayerStatsActivity extends AppCompatActivity {
 
     long playerID;
     String playerNICK;
+
+    ArrayList<PlayerPartnerInfo> stats;
+    private RecyclerView recyclerViewStats;
+    PlayerStatsAdapter adapter;
+
 
     private PlayerDBHelper playerDBHelper;
     TextView title;
@@ -31,7 +41,7 @@ public class PlayerStatsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_player_stats);
 
         title = findViewById(R.id.activity_player_stats_title);
-
+        recyclerViewStats = findViewById(R.id.activity_player_stats_recyclerView);
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -45,65 +55,29 @@ public class PlayerStatsActivity extends AppCompatActivity {
 
         playerDBHelper = new PlayerDBHelper(this);
 
-//        fillTestData();
+        stats = playerDBHelper.getPlayerPartnersInfo(playerNICK);
 
-        displayData();
+        Collections.sort(stats, new Comparator<PlayerPartnerInfo>() {
+            @Override
+            public int compare(PlayerPartnerInfo o1, PlayerPartnerInfo o2) {
+                // Сначала сравниваем по полю wins
+                int winsComparison = Double.compare(o2.getDoubleWinrate(), o1.getDoubleWinrate());
 
-    }
+                // Если wins равны, сравниваем по полю secondField
+                if (winsComparison == 0) {
+                    return Integer.compare(o2.getGames(), o1.getGames());
+                }
 
-
-    private void displayData() {
-        // Получение ссылки на TableLayout
-        TableLayout tableLayout = findViewById(R.id.activity_player_stats_table);
-
-        ArrayList<PlayerPartnerInfo> playerPartnerInfo = playerDBHelper.getPlayerPartnersInfo(playerNICK);
-        for (PlayerPartnerInfo info : playerPartnerInfo) {
-
-
-            TableRow row = new TableRow(this);
-
-
-            String partner = info.getPartner();
-            int games = info.getGames();
-            int wins = info.getWins();
-            int wonPoints = info.getWonPoints();
-            int lostPoints = info.getLostPoints();
-            int tiebreaks = info.getTiebreaks();
-            int tiebreakWins = info.getTiebreakWins();
-
-            TextView textView1 = createTextView(partner);
-            TextView textView2 = createTextView(String.valueOf(games));
-            TextView textView3;
-            if (games != 0) {
-                textView3 = createTextView(String.format("%.0f%%", ((double) wins / games) * 100));
-            } else {
-                textView3 = createTextView("0");
+                return winsComparison;
             }
-            TextView textView4 = createTextView(wonPoints + "-" + lostPoints);
-            TextView textView5 = createTextView(String.valueOf(tiebreaks));
-            TextView textView6;
-            if (tiebreaks != 0) {
-                textView6 = createTextView(String.format("%.0f%%", ((double) tiebreakWins / tiebreaks) * 100));
-            } else {
-                textView6 = createTextView("0");
-            }
+        });
 
-            row.addView(textView1);
-            row.addView(textView2);
-            row.addView(textView3);
-            row.addView(textView4);
-            row.addView(textView5);
-            row.addView(textView6);
+        adapter = new PlayerStatsAdapter(this, stats);
 
-            tableLayout.addView(row);
-        }
-    }
+        recyclerViewStats.setLayoutManager(new LinearLayoutManager(this));
+        recyclerViewStats.setAdapter(adapter);
 
-    private TextView createTextView(String text) {
-        TextView textView = new TextView(this);
-        textView.setText(text);
-        textView.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, 1f));
-        textView.setGravity(android.view.Gravity.CENTER);
-        return textView;
+        recyclerViewStats.addItemDecoration(new DividerItemDecoration(recyclerViewStats.getContext(), DividerItemDecoration.VERTICAL));
+
     }
 }
