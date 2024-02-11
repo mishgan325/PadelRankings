@@ -3,9 +3,7 @@ package com.example.padelrankings;
 public class Player {
     private String nick;
     private int rank;
-
     private String name;
-
     private int id;
 
     public Player(String nick, int rank) {
