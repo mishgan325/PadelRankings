@@ -13,19 +13,18 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-public class CheckSessionAdapter extends RecyclerView.Adapter<CheckSessionAdapter.ViewHolder> {
+public class PlaySessionGamesAdapter extends RecyclerView.Adapter<PlaySessionGamesAdapter.ViewHolder> {
 
     private List<GameData> games = new ArrayList<>();
     private Context context;
 
     private ArrayList<String> nickList = new ArrayList<>();
 
-    public CheckSessionAdapter(Context context, List<GameData> games) {
+    public PlaySessionGamesAdapter(Context context, List<GameData> games) {
         for (int i = 0; i < games.size(); i++) {
-            Log.d("AAAAAA", games.get(i).returnData());
+            Log.i("Games data", games.get(i).returnData());
         }
         this.context = context;
         this.games = games;
@@ -42,7 +41,6 @@ public class CheckSessionAdapter extends RecyclerView.Adapter<CheckSessionAdapte
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         GameData data = games.get(position);
 
-        // Установка данных в Spinner'ы и EditText
         holder.spinner1.setAdapter(createSpinnerAdapter());
         holder.spinner2.setAdapter(createSpinnerAdapter());
         holder.spinner3.setAdapter(createSpinnerAdapter());
@@ -87,12 +85,4 @@ public class CheckSessionAdapter extends RecyclerView.Adapter<CheckSessionAdapte
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         return adapter;
     }
-
-//    public List<GameData> returnGamesData() {
-//        for (int i = 0; i < this.getItemCount(); i++) {
-//            games.get(i) = new GameData()
-//        }
-//
-//        return games;
-//    }
 }
