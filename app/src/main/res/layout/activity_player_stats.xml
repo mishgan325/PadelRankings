@@ -1,85 +1,124 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- Заголовок таблицы -->
     <TextView
         android:id="@+id/activity_player_stats_title"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Статистика игрока"
         android:textSize="20sp"
         android:textStyle="bold"
         android:gravity="center"
-        android:padding="16dp"/>
+        android:padding="16dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Таблица -->
-    <TableLayout
-        android:id="@+id/activity_player_stats_table"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/activity_player_stats_title"
-        android:padding="16dp">
-
-        <!-- Заголовок таблицы -->
-        <TableRow>
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Ник"
-                android:textStyle="bold"
-                android:gravity="center"/>
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Кол-во игр"
-                android:textStyle="bold"
-                android:gravity="center"/>
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Winrate"
-                android:textStyle="bold"
-                android:gravity="center"/>
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Score"
-                android:textStyle="bold"
-                android:gravity="center"/>
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Кол-во ТБ"
-                android:textStyle="bold"
-                android:gravity="center"/>
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Winrate ТБ"
-                android:textStyle="bold"
-                android:gravity="center"/>
-        </TableRow>
-
-        <!-- Динамическое создание строк таблицы в коде -->
-
-    </TableLayout>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/activity_player_stats_recyclerView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:padding="16dp"
+        app:layout_constraintTop_toBottomOf="@id/activity_player_stats_title"
+        app:layout_constraintBottom_toTopOf="@id/activity_player_stats_editButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
     <Button
-        android:id="@+id/buttonEdit"
-        android:layout_width="match_parent"
+        android:id="@+id/activity_player_stats_editButton"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        android:text="Редактировать" />
+        android:layout_marginBottom="4dp"
+        android:text="Редактировать"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/activity_player_stats_recyclerView" />
 
-</RelativeLayout>
+    <!-- Названия столбцов -->
+    <TextView
+        android:id="@+id/textViewNicknameTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Ник"
+        android:textStyle="bold"
+        android:gravity="center"
+        app:layout_constraintTop_toBottomOf="@id/activity_player_stats_title"
+        app:layout_constraintBottom_toTopOf="@id/activity_player_stats_recyclerView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/textViewGamesTitle"
+        android:layout_marginEnd="2dp"
+        android:layout_marginStart="16dp"/>
+
+    <TextView
+        android:id="@+id/textViewGamesTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Кол-во игр"
+        android:textStyle="bold"
+        android:gravity="center"
+        app:layout_constraintTop_toBottomOf="@id/activity_player_stats_title"
+        app:layout_constraintBottom_toTopOf="@id/activity_player_stats_recyclerView"
+        app:layout_constraintStart_toEndOf="@id/textViewNicknameTitle"
+        app:layout_constraintEnd_toStartOf="@id/textViewWinrateTitle"
+        android:layout_marginEnd="2dp"/>
+
+    <TextView
+        android:id="@+id/textViewWinrateTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Winrate"
+        android:textStyle="bold"
+        android:gravity="center"
+        app:layout_constraintTop_toBottomOf="@id/activity_player_stats_title"
+        app:layout_constraintBottom_toTopOf="@id/activity_player_stats_recyclerView"
+        app:layout_constraintStart_toEndOf="@id/textViewGamesTitle"
+        app:layout_constraintEnd_toStartOf="@id/textViewScoreTitle"
+        android:layout_marginEnd="2dp"/>
+
+    <TextView
+        android:id="@+id/textViewScoreTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Score"
+        android:textStyle="bold"
+        android:gravity="center"
+        app:layout_constraintTop_toBottomOf="@id/activity_player_stats_title"
+        app:layout_constraintBottom_toTopOf="@id/activity_player_stats_recyclerView"
+        app:layout_constraintStart_toEndOf="@id/textViewWinrateTitle"
+        app:layout_constraintEnd_toStartOf="@id/textViewTiebreaksTitle"
+        android:layout_marginEnd="2dp"/>
+
+    <TextView
+        android:id="@+id/textViewTiebreaksTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Кол-во ТБ"
+        android:textStyle="bold"
+        android:gravity="center"
+        app:layout_constraintTop_toBottomOf="@id/activity_player_stats_title"
+        app:layout_constraintBottom_toTopOf="@id/activity_player_stats_recyclerView"
+        app:layout_constraintStart_toEndOf="@id/textViewScoreTitle"
+        app:layout_constraintEnd_toStartOf="@id/textViewWinrateTbTitle"
+        android:layout_marginEnd="2dp"/>
+
+    <TextView
+        android:id="@+id/textViewWinrateTbTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Winrate ТБ"
+        android:textStyle="bold"
+        android:gravity="center"
+        app:layout_constraintTop_toBottomOf="@id/activity_player_stats_title"
+        app:layout_constraintBottom_toTopOf="@id/activity_player_stats_recyclerView"
+        app:layout_constraintStart_toEndOf="@id/textViewTiebreaksTitle"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="16dp"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

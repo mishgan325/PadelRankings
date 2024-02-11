@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <!-- Ник -->
+    <TextView
+        android:id="@+id/activity_player_stats_list_textViewNickname"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Ник"
+        android:textStyle="normal"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/activity_player_stats_list_textViewGames" />
+
+    <!-- Кол-во игр -->
+    <TextView
+        android:id="@+id/activity_player_stats_list_textViewGames"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Games"
+        android:textStyle="normal"
+        android:gravity="center"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/activity_player_stats_list_textViewNickname"
+        app:layout_constraintEnd_toStartOf="@+id/activity_player_stats_list_textViewWinrate"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp" />
+
+    <!-- Winrate -->
+    <TextView
+        android:id="@+id/activity_player_stats_list_textViewWinrate"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Winrate"
+        android:textStyle="normal"
+        android:gravity="center"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/activity_player_stats_list_textViewGames"
+        app:layout_constraintEnd_toStartOf="@+id/activity_player_stats_list_textViewScore"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp" />
+
+    <!-- Score -->
+    <TextView
+        android:id="@+id/activity_player_stats_list_textViewScore"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Score"
+        android:textStyle="normal"
+        android:gravity="center"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/activity_player_stats_list_textViewWinrate"
+        app:layout_constraintEnd_toStartOf="@+id/activity_player_stats_list_textViewTiebreaks"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp" />
+
+    <!-- Кол-во ТБ -->
+    <TextView
+        android:id="@+id/activity_player_stats_list_textViewTiebreaks"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Tiebreaks"
+        android:textStyle="normal"
+        android:gravity="center"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/activity_player_stats_list_textViewScore"
+        app:layout_constraintEnd_toStartOf="@+id/activity_player_stats_list_textViewWinrateTb"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp" />
+
+    <!-- Winrate ТБ -->
+    <TextView
+        android:id="@+id/activity_player_stats_list_textViewWinrateTb"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Winrate TB"
+        android:textStyle="normal"
+        android:gravity="center"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/activity_player_stats_list_textViewTiebreaks"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
