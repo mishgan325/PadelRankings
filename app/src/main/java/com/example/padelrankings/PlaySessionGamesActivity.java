@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -22,9 +21,16 @@ public class PlaySessionGamesActivity extends AppCompatActivity {
     private ArrayList<String> players = new ArrayList<>();
 
     private RecyclerView checkList;
-    CheckSessionAdapter adapter;
+    PlaySessionGamesAdapter adapter;
 
 
+    // сохранение игр
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        updateGameData();
+        outState.putSerializable("games", games);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,17 +38,19 @@ public class PlaySessionGamesActivity extends AppCompatActivity {
         setContentView(R.layout.activity_play_session_games);
 
         Intent intent = getIntent();
-        games = new ArrayList<>();
+
         players = intent.getStringArrayListExtra("players");
 
-
-        Log.d("Players:", players.toString());
-
-        games.add(new GameData(players.get(0), players.get(0), players.get(0), players.get(0), 0, 0));
+        if (savedInstanceState != null) {
+            games = (ArrayList<GameData>) savedInstanceState.getSerializable("games");
+        } else {
+            games = new ArrayList<>();
+            games.add(new GameData(players.get(0), players.get(0), players.get(0), players.get(0), 0, 0));
+        }
 
         checkList = findViewById(R.id.activity_check_recyclerView);
 
-        adapter = new CheckSessionAdapter(this, games);
+        adapter = new PlaySessionGamesAdapter(this, games);
 
         adapter.setNickList(players);
 
@@ -139,5 +147,11 @@ public class PlaySessionGamesActivity extends AppCompatActivity {
         else {
             Toast.makeText(this, "Минимум 1 игра", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d("ActivityLifecycle", "Activity destroyed");
     }
 }
