@@ -21,6 +21,16 @@ public class GameData implements Serializable {
         this.team2score = score2;
     }
 
+    public GameData(GameData original) {
+        this.team1player1 = original.team1player1;
+        this.team1player2 = original.team1player2;
+
+        this.team2player1 = original.team2player1;
+        this.team2player2 = original.team2player2;
+
+        this.team1score = original.team1score;
+        this.team2score = original.team2score;
+    }
 
     public void setTeam1player1(String team1player1) {
         this.team1player1 = team1player1;
