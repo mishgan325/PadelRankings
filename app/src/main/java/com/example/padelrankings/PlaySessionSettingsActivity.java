@@ -9,10 +9,13 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 public class PlaySessionSettingsActivity extends AppCompatActivity {
     private int selectedPlayersCount;
@@ -117,10 +120,15 @@ public class PlaySessionSettingsActivity extends AppCompatActivity {
 
     public void startGame(View view) {
         ArrayList<String> players = getPlayersList();
-        Log.d("Player list", players.toString());
-        Intent newGame = new Intent(PlaySessionSettingsActivity.this, PlaySessionGamesActivity.class);
-        newGame.putExtra("players", new ArrayList<>(players));
-        startActivity(newGame);
+        Log.i("Player list", players.toString());
+        if (uniquePlayers(players)) {
+            Intent newGame = new Intent(PlaySessionSettingsActivity.this, PlaySessionGamesActivity.class);
+            newGame.putExtra("players", new ArrayList<>(players));
+            startActivity(newGame);
+        } else {
+            Toast.makeText(this, "Совпадают игроки", Toast.LENGTH_SHORT).show();
+        }
+
     }
 
 
@@ -128,5 +136,16 @@ public class PlaySessionSettingsActivity extends AppCompatActivity {
         Intent intent = new Intent(PlaySessionSettingsActivity.this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         startActivity(intent);
+    }
+
+    private boolean uniquePlayers(ArrayList<String> players) {
+        Set<String> uniqueStrings = new HashSet<>();
+
+        for (String str : players) {
+            if (!uniqueStrings.add(str)) {
+                return false;
+            }
+        }
+        return true;
     }
 }

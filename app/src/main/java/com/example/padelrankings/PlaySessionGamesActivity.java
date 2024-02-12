@@ -13,6 +13,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 
 public class PlaySessionGamesActivity extends AppCompatActivity {
@@ -92,8 +94,15 @@ public class PlaySessionGamesActivity extends AppCompatActivity {
         updateGameData();
 
         for (int i = 0; i < games.size(); i++) {
-            Log.d("finalResults", games.get(i).returnData());
+            Log.i("finalResults", games.get(i).returnData());
+
+            if (!uniquePlayers(games.get(i)))
+            {
+                Toast.makeText(this, "Совпадают игроки в игре №" + i+1, Toast.LENGTH_SHORT).show();
+                return;
+            }
         }
+
         DatabaseHelper dbHelper = new DatabaseHelper(this);
         ArrayList<Integer> ranks = new ArrayList<>();
         for(String player: players) {
@@ -147,6 +156,16 @@ public class PlaySessionGamesActivity extends AppCompatActivity {
         else {
             Toast.makeText(this, "Минимум 1 игра", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private boolean uniquePlayers(GameData game) {
+        Set<String> playerSet = new HashSet<>();
+        playerSet.add(game.getTeam1player1());
+        playerSet.add(game.getTeam1player2());
+        playerSet.add(game.getTeam2player1());
+        playerSet.add(game.getTeam2player2());
+
+        return playerSet.size() == 4;
     }
 
     @Override
