@@ -143,7 +143,7 @@ public class PlaySessionGamesActivity extends AppCompatActivity {
             Log.d("tmp", games.get(i).returnData());
         }
 
-        games.add(new GameData(players.get(0), players.get(0), players.get(0), players.get(0), 0, 0));
+        games.add(new GameData(games.get(games.size()-1)));
         adapter.notifyDataSetChanged();
     }
 
