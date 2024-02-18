@@ -136,7 +136,7 @@ public class PlayerDBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         String request = "SELECT * FROM " + TABLE_NAME + " WHERE (" + COLUMN_PLAYER1 + " = ? AND " + COLUMN_PLAYER2 + " = ?) OR (" + COLUMN_PLAYER2 + " = ? AND " + COLUMN_PLAYER1 + " = ?)";
-        Cursor cursor = db.rawQuery(request, new String[]{player1, player2, player2, player1});
+        Cursor cursor = db.rawQuery(request, new String[]{player1, player2, player1, player2});
 
         if (cursor != null && cursor.moveToFirst()) {
             ContentValues values = new ContentValues();
