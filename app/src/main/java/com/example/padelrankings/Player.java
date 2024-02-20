@@ -5,18 +5,19 @@ public class Player {
     private int rank;
     private String name;
     private int id;
+    private int mode = -1;
 
     public Player(String nick, int rank) {
         this.nick = nick;
         this.rank = rank;
     }
 
-    public Player(int id, String nick, String name, int rank) {
+    public Player(int id, String nick, String name, int rank, int mode) {
         this.nick = nick;
         this.rank = rank;
         this.name = name;
         this.id = id;
-
+        this.mode = mode;
     }
 
     public int getRank() {
@@ -46,6 +47,11 @@ public class Player {
                 ", nick='" + nick + '\'' +
                 ", name='" + name + '\'' +
                 ", rank=" + rank +
+                ", mode=" + mode +
                 '}';
+    }
+
+    public int getMode() {
+        return mode;
     }
 }

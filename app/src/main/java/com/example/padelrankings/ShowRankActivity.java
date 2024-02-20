@@ -67,7 +67,7 @@ public class ShowRankActivity extends AppCompatActivity {
 
         userList.setAdapter(userAdapter);
 
-        fillPlayerListFromDatabase();
+        fillPlayerList();
 
         userList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -87,8 +87,9 @@ public class ShowRankActivity extends AppCompatActivity {
         });
     }
 
-    private void fillPlayerListFromDatabase() {
+    private void fillPlayerList() {
         db = databaseHelper.getReadableDatabase();
+        ModeHelperJSON modeHelperJSON = new ModeHelperJSON(this, "playersMode");
         userCursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_NAME + " ORDER BY " + DatabaseHelper.COLUMN_CURRENT_RANKING + " DESC", null);
         if (userCursor.moveToFirst()) {
             do {
@@ -97,10 +98,10 @@ public class ShowRankActivity extends AppCompatActivity {
                 String nick = userCursor.getString(1);
                 String name = userCursor.getString(2);
                 int rank = userCursor.getInt(3);
+                int mode = modeHelperJSON.getPlayerMode(nick);
 
 
-
-                Player player = new Player(id, nick, name, rank);
+                Player player = new Player(id, nick, name, rank, mode);
 
                 Log.d("Player list:", player.toString());
 

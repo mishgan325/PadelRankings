@@ -32,12 +32,14 @@ public class ShowRankAdapter extends ArrayAdapter<Player> {
         TextView placeView = view.findViewById(R.id.activity_show_rank_place);
         TextView nickView = view.findViewById(R.id.activity_show_rank_nick);
         TextView rankView = view.findViewById(R.id.activity_show_rank_rankValue);
+        TextView modeView = view.findViewById(R.id.activity_show_rank_mode);
 
         Player player = players.get(position);
 
         placeView.setText(String.valueOf(position+1));
         nickView.setText(player.getNick());
         rankView.setText(String.valueOf(player.getRank()));
+        modeView.setText(String.valueOf(player.getMode()));
 
         return view;
     }
