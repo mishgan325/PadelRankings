@@ -5,8 +5,14 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.Environment;
 import android.util.Log;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class PlayerDBHelper extends SQLiteOpenHelper {
@@ -76,7 +82,7 @@ public class PlayerDBHelper extends SQLiteOpenHelper {
         String[] selectionArgs = { nickname };
 
         Cursor cursor = db.query(
-                PlayerDBHelper.TABLE_NAME,   // Таблица для запроса
+                TABLE_NAME,   // Таблица для запроса
                 null,                        // Все столбцы таблицы
                 selection,                   // Условие выборки
                 selectionArgs,               // Значения условия выборки
@@ -103,7 +109,7 @@ public class PlayerDBHelper extends SQLiteOpenHelper {
 
         selection = PlayerDBHelper.COLUMN_PLAYER2 + " = ?";
         cursor = db.query(
-                PlayerDBHelper.TABLE_NAME,   // Таблица для запроса
+                TABLE_NAME,   // Таблица для запроса
                 null,                        // Все столбцы таблицы
                 selection,                   // Условие выборки
                 selectionArgs,               // Значения условия выборки
@@ -172,6 +178,96 @@ public class PlayerDBHelper extends SQLiteOpenHelper {
             Log.i("Database search", "404, creating new pair");
             addPartnerToPlayer(player1, player2);
             updateGameData(player1, player2, wonPoints, lostPoints);
+        }
+    }
+
+    public boolean exportData(String fileName) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
+
+        // Папка приложения в директории Downloads
+        File appFolder = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "PadelRankings");
+        if (!appFolder.exists()) {
+            appFolder.mkdirs();
+        }
+
+        try (FileWriter writer = new FileWriter(new File(appFolder, fileName))) {
+            // Запись заголовков столбцов
+            for (String columnName : cursor.getColumnNames()) {
+                writer.write(columnName + "\t");
+            }
+            writer.write("\n");
+
+            // Запись данных
+            while (cursor.moveToNext()) {
+                for (int i = 0; i < cursor.getColumnCount(); i++) {
+                    writer.write(cursor.getString(i) + "\t");
+                }
+                writer.write("\n");
+            }
+
+            return true;  // Успешное выполнение
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;  // Ошибка
+        } finally {
+            cursor.close();
+        }
+    }
+
+    public boolean importData(String filePath) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            db.beginTransaction();
+            // Пропускаем первую строку, так как она содержит заголовки столбцов
+            String headerLine = reader.readLine();
+            if (headerLine == null) {
+                return false;
+            }
+
+            String[] headerColumns = headerLine.split("\t");
+            if (headerColumns.length != 9 || !headerColumns[0].equals(COLUMN_ID) ||
+                    !headerColumns[1].equals(COLUMN_PLAYER1) || !headerColumns[2].equals(COLUMN_PLAYER2) ||
+                    !headerColumns[3].equals(COLUMN_GAMES) || !headerColumns[4].equals(COLUMN_WINS) ||
+                    !headerColumns[5].equals(COLUMN_WON_POINTS) || !headerColumns[6].equals(COLUMN_LOST_POINTS) ||
+                    !headerColumns[7].equals(COLUMN_TIEBREAKS) || !headerColumns[8].equals(COLUMN_TIEBREAK_WINS)) {
+                return false;
+            }
+
+            db.execSQL("DELETE FROM " + TABLE_NAME);
+            while ((line = reader.readLine()) != null) {
+                String[] values = line.split("\t");
+
+                if (values.length == 9) {
+                    ContentValues contentValues = new ContentValues();
+                    contentValues.put(COLUMN_PLAYER1, values[1]);
+                    contentValues.put(COLUMN_PLAYER2, values[2]);
+                    try {
+                        contentValues.put(COLUMN_GAMES, Integer.parseInt(values[3]));
+                        contentValues.put(COLUMN_WINS, Integer.parseInt(values[4]));
+                        contentValues.put(COLUMN_WON_POINTS, Integer.parseInt(values[5]));
+                        contentValues.put(COLUMN_LOST_POINTS, Integer.parseInt(values[6]));
+                        contentValues.put(COLUMN_TIEBREAKS, Integer.parseInt(values[7]));
+                        contentValues.put(COLUMN_TIEBREAK_WINS, Integer.parseInt(values[8]));
+                    } catch (NumberFormatException e) {
+                        return false;
+                    }
+
+                    db.insert(TABLE_NAME, null, contentValues);
+                } else {
+                    // Некорректное количество значений в строке
+                    return false;
+                }
+            }
+            db.setTransactionSuccessful();
+
+            return true;  // Успешное выполнение
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;  // Ошибка
+        } finally {
+            db.endTransaction();
         }
     }
 

@@ -3,6 +3,8 @@ package com.example.padelrankings;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -34,15 +36,18 @@ public class ShowRankActivity extends AppCompatActivity {
 
     private static final int READ_REQUEST_CODE = 42;
     private DatabaseHelper databaseHelper;
+    private PlayerDBHelper playerDBHelper;
     private SQLiteDatabase db;
     private Cursor userCursor;
     private ShowRankAdapter userAdapter;
     private Button importButton;
     private Button exportButton;
 
-    ListView userList;
+    private ListView userList;
 
-    List<Player> playerList;
+    private List<Player> playerList;
+
+    private String importCategory;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +55,7 @@ public class ShowRankActivity extends AppCompatActivity {
         setContentView(R.layout.activity_show_rank);
 
         databaseHelper = new DatabaseHelper(getApplicationContext());
+        playerDBHelper = new PlayerDBHelper(this);
         userList = findViewById(R.id.activity_show_rank_list);
         importButton = findViewById(R.id.activity_show_rank_importButton);
         exportButton = findViewById(R.id.activity_show_rank_exportButton);
@@ -116,6 +122,27 @@ public class ShowRankActivity extends AppCompatActivity {
 
 
     public void importData(View view) {
+        showSelectionDialog();
+    }
+
+    private void showSelectionDialog() {
+        final String[] categories = {"Rankings", "PlayerStats"}; // Ваши категории
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Выберите категорию для импорта")
+                .setItems(categories, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Обработка выбора категории
+                        importCategory = categories[which];
+                        startImport();
+                    }
+                });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    private void startImport() {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         Uri uri = Uri.parse(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath());
         intent.setDataAndType(uri, "text/plain");
@@ -132,11 +159,21 @@ public class ShowRankActivity extends AppCompatActivity {
                 Uri uri = data.getData();
                 String filePath = uri.getPath();  // Получить путь к выбранному файлу
 
-                if (databaseHelper.importData(filePath.replace("/document/raw:", ""))) {
-                    Toast.makeText(this, "Импорт произведен успешно", Toast.LENGTH_SHORT).show();
-                    recreate();
-                } else {
-                    Toast.makeText(this, "При импорте возникла ошибка", Toast.LENGTH_SHORT).show();
+                // Обработка импорта в соответствии с выбранной категорией
+                if (importCategory.equals("Rankings")) {
+                    if (databaseHelper.importData(filePath.replace("/document/raw:", ""))) {
+                        Toast.makeText(this, "Импорт в категорию Rankings произведен успешно", Toast.LENGTH_SHORT).show();
+                        recreate();
+                    } else {
+                        Toast.makeText(this, "При импорте в категорию Rankings возникла ошибка", Toast.LENGTH_SHORT).show();
+                    }
+                } else if (importCategory.equals("PlayerStats")) {
+                    if (playerDBHelper.importData(filePath.replace("/document/raw:", ""))) {
+                        Toast.makeText(this, "Импорт в категорию PlayerStats произведен успешно", Toast.LENGTH_SHORT).show();
+                        recreate();
+                    } else {
+                        Toast.makeText(this, "При импорте в категорию PlayerStats возникла ошибка", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         }
@@ -150,9 +187,11 @@ public class ShowRankActivity extends AppCompatActivity {
         String formattedDate = dateFormat.format(currentDate);
 
         // Создаем название файла с текущей датой
-        String fileName = "PadelRankingsExported_" + formattedDate + ".txt";
+        String fileName1 = "Rankings_" + formattedDate + ".txt";
+        String fileName2 = "PlayerStats_" + formattedDate + ".txt";
 
-        if (databaseHelper.exportData(fileName)) {
+
+        if (databaseHelper.exportData(fileName1) && playerDBHelper.exportData(fileName2)) {
             Toast.makeText(this, "БД экспортирована успешно", Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(this, "При экспорте возникла ошибка", Toast.LENGTH_SHORT).show();
