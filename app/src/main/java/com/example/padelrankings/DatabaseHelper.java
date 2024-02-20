@@ -170,7 +170,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 return false;
             }
 
-            db.execSQL("DELETE FROM " + DatabaseHelper.TABLE_NAME);
+            db.execSQL("DELETE FROM " + TABLE_NAME);
             while ((line = reader.readLine()) != null) {
                 String[] values = line.split("\t");
 
@@ -250,14 +250,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(COLUMN_CURRENT_RANKING, currentRanking);
 
 
-        db.update(DatabaseHelper.TABLE_NAME, values, DatabaseHelper.COLUMN_ID + "=" + userId, null);
+        db.update(TABLE_NAME, values, COLUMN_ID + "=" + userId, null);
         
         db.close();
     }
 
     public void deletePlayerById(long playerId) {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(DatabaseHelper.TABLE_NAME, "_id = ?", new String[]{String.valueOf(playerId)});
+        db.delete(TABLE_NAME, "_id = ?", new String[]{String.valueOf(playerId)});
     }
 
 
