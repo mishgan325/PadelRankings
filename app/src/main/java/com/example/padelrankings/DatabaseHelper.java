@@ -159,6 +159,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             String headerLine = reader.readLine();
             if (headerLine == null) {
                 // Файл пустой
+
+                Log.e("DBHelper", "file is empty");
+
                 return false;
             }
 
@@ -167,12 +170,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     !headerColumns[1].equals(COLUMN_NICK) || !headerColumns[2].equals(COLUMN_NAME) ||
                     !headerColumns[3].equals(COLUMN_CURRENT_RANKING)) {
                 // Некорректный формат файла
+
+                Log.e("DBHelper", "columns is wrong");
+
                 return false;
             }
 
             db.execSQL("DELETE FROM " + TABLE_NAME);
             while ((line = reader.readLine()) != null) {
                 String[] values = line.split("\t");
+
+                Log.d("Line in file", values.toString());
+
 
                 if (values.length == 4) {
                     ContentValues contentValues = new ContentValues();
@@ -182,23 +191,30 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         contentValues.put(COLUMN_CURRENT_RANKING, Integer.parseInt(values[3]));
                     } catch (NumberFormatException e) {
                         // Некорректное значение для INTEGER
+
+                        Log.e("DBHelper", "integer error");
+
                         return false;
                     }
 
                     db.insert(TABLE_NAME, null, contentValues);
                 } else {
                     // Некорректное количество значений в строке
+
+                    Log.e("DBHelper", "in line error");
+
                     return false;
                 }
             }
             db.setTransactionSuccessful();
+            db.endTransaction();
+            db.close();
 
             return true;  // Успешное выполнение
         } catch (IOException e) {
             e.printStackTrace();
+            db.close();
             return false;  // Ошибка
-        } finally {
-            db.endTransaction();
         }
     }
 
