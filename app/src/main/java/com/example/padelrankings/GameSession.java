@@ -35,9 +35,12 @@ public class GameSession {
         int score1 = game.getTeam1score();
         int score2 = game.getTeam2score();
 
-
         double exp_value_team1, exp_value_team2, real_value_team1 = 0.5, real_value_team2 = 0.5;
-        int k = 20;
+
+        int k = 20; // дефолт коэффициент
+        if (score1 > 5 || score2 > 5)
+            k = 30;
+
         //рассчитываем ожидаемые очки для обоих команд
         exp_value_team1 = 1 / (1 + Math.pow(10, ((double)(teamBplayer1.getRank() + teamBplayer2.getRank() -
                 (teamAplayer1.getRank() + teamAplayer2.getRank())) / 400)));
