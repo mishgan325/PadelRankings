@@ -21,7 +21,7 @@ public class PlayerDBHelper extends SQLiteOpenHelper {
 
     private static final String TABLE_NAME = "PlayerStats";
 
-    public static final String COLUMN_ID = "id";
+    public static final String COLUMN_ID = "_id";
     public static final String COLUMN_PLAYER1 = "player1";
     public static final String COLUMN_PLAYER2 = "player2";
     public static final String COLUMN_GAMES = "games";
@@ -54,7 +54,7 @@ public class PlayerDBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS PlayerStats");
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
         onCreate(db);
     }
 
@@ -182,8 +182,8 @@ public class PlayerDBHelper extends SQLiteOpenHelper {
     }
 
     public boolean exportData(String fileName) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
+            SQLiteDatabase db = this.getReadableDatabase();
+            Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
 
         // Папка приложения в директории Downloads
         File appFolder = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "PadelRankings");
@@ -205,7 +205,7 @@ public class PlayerDBHelper extends SQLiteOpenHelper {
                 }
                 writer.write("\n");
             }
-
+            db.close();
             return true;  // Успешное выполнение
         } catch (IOException e) {
             e.printStackTrace();
@@ -213,61 +213,73 @@ public class PlayerDBHelper extends SQLiteOpenHelper {
         } finally {
             cursor.close();
         }
+
     }
 
-    public boolean importData(String filePath) {
+    public boolean importData(String fileContent) {
         SQLiteDatabase db = this.getWritableDatabase();
-        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
-            String line;
-            db.beginTransaction();
+        try {
+            String[] lines = fileContent.split("\\r?\\n"); // Разделение содержимого файла на строки
+            if (lines.length == 0) {
+                // Файл пустой
+
+                Log.e("DBHelper", "file is empty");
+
+                return false;
+            }
+
             // Пропускаем первую строку, так как она содержит заголовки столбцов
-            String headerLine = reader.readLine();
-            if (headerLine == null) {
+            String headerLine = lines[0];
+            String[] values = headerLine.split("\t");
+
+            for (String i:values
+                 ) {
+                Log.d("stats", i);
+            }
+            if (!values[0].equals(COLUMN_ID) ||
+                    !values[1].equals(COLUMN_PLAYER1) || !values[2].equals(COLUMN_PLAYER2) ||
+                    !values[3].equals(COLUMN_GAMES) || !values[4].equals(COLUMN_WINS) ||
+                    !values[5].equals(COLUMN_WON_POINTS) || !values[6].equals(COLUMN_LOST_POINTS) ||
+                    !values[7].equals(COLUMN_TIEBREAKS) || !values[8].equals(COLUMN_TIEBREAK_WINS)) {
+                // Некорректный формат файла
+
+                Log.e("PlayerDBHelper", "columns is wrong");
+
                 return false;
             }
 
-            String[] headerColumns = headerLine.split("\t");
-            if (headerColumns.length != 9 || !headerColumns[0].equals(COLUMN_ID) ||
-                    !headerColumns[1].equals(COLUMN_PLAYER1) || !headerColumns[2].equals(COLUMN_PLAYER2) ||
-                    !headerColumns[3].equals(COLUMN_GAMES) || !headerColumns[4].equals(COLUMN_WINS) ||
-                    !headerColumns[5].equals(COLUMN_WON_POINTS) || !headerColumns[6].equals(COLUMN_LOST_POINTS) ||
-                    !headerColumns[7].equals(COLUMN_TIEBREAKS) || !headerColumns[8].equals(COLUMN_TIEBREAK_WINS)) {
-                return false;
-            }
-
+            db.beginTransaction();
             db.execSQL("DELETE FROM " + TABLE_NAME);
-            while ((line = reader.readLine()) != null) {
-                String[] values = line.split("\t");
 
-                if (values.length == 9) {
-                    ContentValues contentValues = new ContentValues();
-                    contentValues.put(COLUMN_PLAYER1, values[1]);
-                    contentValues.put(COLUMN_PLAYER2, values[2]);
-                    try {
-                        contentValues.put(COLUMN_GAMES, Integer.parseInt(values[3]));
-                        contentValues.put(COLUMN_WINS, Integer.parseInt(values[4]));
-                        contentValues.put(COLUMN_WON_POINTS, Integer.parseInt(values[5]));
-                        contentValues.put(COLUMN_LOST_POINTS, Integer.parseInt(values[6]));
-                        contentValues.put(COLUMN_TIEBREAKS, Integer.parseInt(values[7]));
-                        contentValues.put(COLUMN_TIEBREAK_WINS, Integer.parseInt(values[8]));
-                    } catch (NumberFormatException e) {
-                        return false;
-                    }
+            for (int i = 9; i < values.length; i += 9) {
 
-                    db.insert(TABLE_NAME, null, contentValues);
-                } else {
-                    // Некорректное количество значений в строке
+                Log.d("Line in file", values[i] + " " + values[i+1] + " " + values[i+2] + " " + values[i+3] );
+
+                ContentValues contentValues = new ContentValues();
+                contentValues.put(COLUMN_PLAYER1, values[i+1]);
+                contentValues.put(COLUMN_PLAYER2, values[i+2]);
+                try {
+                    contentValues.put(COLUMN_GAMES, Integer.parseInt(values[i+3]));
+                    contentValues.put(COLUMN_WINS, Integer.parseInt(values[i+4]));
+                    contentValues.put(COLUMN_WON_POINTS, Integer.parseInt(values[i+5]));
+                    contentValues.put(COLUMN_LOST_POINTS, Integer.parseInt(values[i+6]));
+                    contentValues.put(COLUMN_TIEBREAKS, Integer.parseInt(values[i+7]));
+                    contentValues.put(COLUMN_TIEBREAK_WINS, Integer.parseInt(values[i+8]));
+                } catch (NumberFormatException e) {
                     return false;
                 }
+
+                db.insert(TABLE_NAME, null, contentValues);
             }
             db.setTransactionSuccessful();
+            db.endTransaction();
+            db.close();
 
             return true;  // Успешное выполнение
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
+            db.close();
             return false;  // Ошибка
-        } finally {
-            db.endTransaction();
         }
     }
 

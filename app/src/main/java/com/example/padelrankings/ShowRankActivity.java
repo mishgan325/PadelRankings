@@ -4,12 +4,15 @@ package com.example.padelrankings;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -22,6 +25,9 @@ import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URISyntaxException;
+import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -35,10 +41,9 @@ import android.os.Bundle;
 public class ShowRankActivity extends AppCompatActivity {
 
     private static final int READ_REQUEST_CODE = 42;
+    private static final String PREFS_NAME = "SavedPrefs";
     private DatabaseHelper databaseHelper;
     private PlayerDBHelper playerDBHelper;
-    private SQLiteDatabase db;
-    private Cursor userCursor;
     private ShowRankAdapter userAdapter;
     private Button importButton;
     private Button exportButton;
@@ -47,14 +52,12 @@ public class ShowRankActivity extends AppCompatActivity {
 
     private List<Player> playerList;
 
-    private String importCategory;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_rank);
 
-        databaseHelper = new DatabaseHelper(getApplicationContext());
+        databaseHelper = new DatabaseHelper(this);
         playerDBHelper = new PlayerDBHelper(this);
         userList = findViewById(R.id.activity_show_rank_list);
         importButton = findViewById(R.id.activity_show_rank_importButton);
@@ -66,14 +69,16 @@ public class ShowRankActivity extends AppCompatActivity {
     public void onResume() {
         super.onResume();
 
-        playerList = new ArrayList<>();
+        playerList = databaseHelper.getPlayers();
+        for (Player i:playerList
+        ) {
+            Log.d("player", i.toString());
+        }
         userAdapter = new ShowRankAdapter(this, R.layout.player_list_item_layout, playerList);
 
         userList = findViewById(R.id.activity_show_rank_list);
 
         userList.setAdapter(userAdapter);
-
-        fillPlayerList();
 
         userList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -86,40 +91,12 @@ public class ShowRankActivity extends AppCompatActivity {
 
                 Log.d("Player id:", String.valueOf(playerId));
 
-                Intent intent = new Intent(getApplicationContext(), PlayerStatsActivity.class);
+                Intent intent = new Intent(ShowRankActivity.this, PlayerStatsActivity.class);
                 intent.putExtra("id", playerId);
                 startActivity(intent);
             }
         });
     }
-
-    private void fillPlayerList() {
-        db = databaseHelper.getReadableDatabase();
-        ModeHelperJSON modeHelperJSON = new ModeHelperJSON(this, "playersMode");
-        userCursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_NAME + " ORDER BY " + DatabaseHelper.COLUMN_CURRENT_RANKING + " DESC", null);
-        if (userCursor.moveToFirst()) {
-            do {
-                // Получение данных из курсора
-                int id = userCursor.getInt(0);
-                String nick = userCursor.getString(1);
-                String name = userCursor.getString(2);
-                int rank = userCursor.getInt(3);
-                int mode = modeHelperJSON.getPlayerMode(nick);
-
-
-                Player player = new Player(id, nick, name, rank, mode);
-
-                Log.d("Player list:", player.toString());
-
-                playerList.add(player);
-            } while (userCursor.moveToNext());
-        }
-        userCursor.close();
-
-        // Уведомляем адаптер о изменениях в данных
-        userAdapter.notifyDataSetChanged();
-    }
-
 
     public void importData(View view) {
         showSelectionDialog();
@@ -134,7 +111,7 @@ public class ShowRankActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         // Обработка выбора категории
-                        importCategory = categories[which];
+                        savePreferences(ShowRankActivity.this, "category", categories[which]);
                         startImport();
                     }
                 });
@@ -155,21 +132,21 @@ public class ShowRankActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == READ_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+
             if (data != null) {
                 Uri uri = data.getData();
-                String filePath = uri.getPath();  // Получить путь к выбранному файлу
 
-                // Обработка импорта в соответствии с выбранной категорией
+                String fileContent = FileHelper.readFileContent(this, uri);
+
+                String importCategory = loadPreferences(this, "category");
                 if (importCategory.equals("Rankings")) {
-                    if (databaseHelper.importData(filePath.replace("/document/raw:", ""))) {
-                        Toast.makeText(this, "Импорт в категорию Rankings произведен успешно", Toast.LENGTH_SHORT).show();
+                    if (databaseHelper.importData(fileContent)) {
                         recreate();
                     } else {
                         Toast.makeText(this, "При импорте в категорию Rankings возникла ошибка", Toast.LENGTH_SHORT).show();
                     }
                 } else if (importCategory.equals("PlayerStats")) {
-                    if (playerDBHelper.importData(filePath.replace("/document/raw:", ""))) {
-                        Toast.makeText(this, "Импорт в категорию PlayerStats произведен успешно", Toast.LENGTH_SHORT).show();
+                    if (playerDBHelper.importData(fileContent)) {
                         recreate();
                     } else {
                         Toast.makeText(this, "При импорте в категорию PlayerStats возникла ошибка", Toast.LENGTH_SHORT).show();
@@ -196,5 +173,17 @@ public class ShowRankActivity extends AppCompatActivity {
         } else {
             Toast.makeText(this, "При экспорте возникла ошибка", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void savePreferences(Context context, String key, String value) {
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString(key, value);
+        editor.apply();
+    }
+
+    private String loadPreferences(Context context, String key) {
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        return prefs.getString(key, null); // Второй параметр - значение по умолчанию, если ключ не найден
     }
 }

@@ -36,6 +36,29 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
+    public ArrayList<Player> getPlayers() {
+        ArrayList<Player> recordsList = new ArrayList<>();
+        String selectQuery = "SELECT * FROM " + TABLE_NAME;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                int id = cursor.getInt(0);
+                String nick = cursor.getString(1);
+                String name = cursor.getString(2);
+                int rank = cursor.getInt(3);
+
+                Player tmp_player = new Player(id, nick, name, rank);
+
+                recordsList.add(tmp_player);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+        return recordsList;
+    }
+
     public ArrayList<String> getNicks() {
         ArrayList<String> nameList = new ArrayList<>();
 
@@ -150,14 +173,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 
-    public boolean importData(String filePath) {
+    public boolean importData(String fileContent) {
         SQLiteDatabase db = this.getWritableDatabase();
-        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
-            String line;
-            db.beginTransaction();
-            // Пропускаем первую строку, так как она содержит заголовки столбцов
-            String headerLine = reader.readLine();
-            if (headerLine == null) {
+        try {
+            String[] lines = fileContent.split("\\r?\\n"); // Разделение содержимого файла на строки
+            if (lines.length == 0) {
                 // Файл пустой
 
                 Log.e("DBHelper", "file is empty");
@@ -165,10 +185,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 return false;
             }
 
-            String[] headerColumns = headerLine.split("\t");
-            if (headerColumns.length != 4 || !headerColumns[0].equals(COLUMN_ID) ||
-                    !headerColumns[1].equals(COLUMN_NICK) || !headerColumns[2].equals(COLUMN_NAME) ||
-                    !headerColumns[3].equals(COLUMN_CURRENT_RANKING)) {
+            // Пропускаем первую строку, так как она содержит заголовки столбцов
+            String headerLine = lines[0];
+            String[] values = headerLine.split("\t");
+
+            if (!values[0].equals(COLUMN_ID) ||
+                    !values[1].equals(COLUMN_NICK) || !values[2].equals(COLUMN_NAME) ||
+                    !values[3].equals(COLUMN_CURRENT_RANKING)) {
                 // Некорректный формат файла
 
                 Log.e("DBHelper", "columns is wrong");
@@ -176,42 +199,34 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 return false;
             }
 
+            db.beginTransaction();
             db.execSQL("DELETE FROM " + TABLE_NAME);
-            while ((line = reader.readLine()) != null) {
-                String[] values = line.split("\t");
 
-                Log.d("Line in file", values.toString());
+            for (int i = 4; i < values.length; i += 4) {
 
+                Log.d("Line in file", values[i] + " " + values[i+1] + " " + values[i+2] + " " + values[i+3] );
 
-                if (values.length == 4) {
-                    ContentValues contentValues = new ContentValues();
-                    contentValues.put(COLUMN_NICK, values[1]);
-                    contentValues.put(COLUMN_NAME, values[2]);
-                    try {
-                        contentValues.put(COLUMN_CURRENT_RANKING, Integer.parseInt(values[3]));
-                    } catch (NumberFormatException e) {
-                        // Некорректное значение для INTEGER
+                ContentValues contentValues = new ContentValues();
+                contentValues.put(COLUMN_NICK, values[i+1]);
+                contentValues.put(COLUMN_NAME, values[i+2]);
+                try {
+                    contentValues.put(COLUMN_CURRENT_RANKING, Integer.parseInt(values[i+3]));
+                } catch (NumberFormatException e) {
+                    // Некорректное значение для INTEGER
 
-                        Log.e("DBHelper", "integer error");
-
-                        return false;
-                    }
-
-                    db.insert(TABLE_NAME, null, contentValues);
-                } else {
-                    // Некорректное количество значений в строке
-
-                    Log.e("DBHelper", "in line error");
+                    Log.e("DBHelper", "integer error");
 
                     return false;
                 }
+
+                db.insert(TABLE_NAME, null, contentValues);
             }
             db.setTransactionSuccessful();
             db.endTransaction();
             db.close();
 
             return true;  // Успешное выполнение
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             db.close();
             return false;  // Ошибка

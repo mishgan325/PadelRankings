@@ -12,12 +12,11 @@ public class Player {
         this.rank = rank;
     }
 
-    public Player(int id, String nick, String name, int rank, int mode) {
+    public Player(int id, String nick, String name, int rank) {
         this.nick = nick;
         this.rank = rank;
         this.name = name;
         this.id = id;
-        this.mode = mode;
     }
 
     public int getRank() {

@@ -63,7 +63,7 @@ public class PlayerStatsActivity extends AppCompatActivity {
                 // Сначала сравниваем по полю wins
                 int winsComparison = Double.compare(o2.getDoubleWinrate(), o1.getDoubleWinrate());
 
-                // Если wins равны, сравниваем по полю secondField
+                // Если wins равны, сравниваем по полю games
                 if (winsComparison == 0) {
                     return Integer.compare(o2.getGames(), o1.getGames());
                 }
