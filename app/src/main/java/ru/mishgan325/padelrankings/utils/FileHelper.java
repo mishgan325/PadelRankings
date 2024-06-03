@@ -1,4 +1,4 @@
-package com.example.padelrankings;
+package ru.mishgan325.padelrankings.utils;
 
 import android.content.ContentResolver;
 import android.content.Context;

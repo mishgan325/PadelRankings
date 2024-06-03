@@ -1,8 +1,5 @@
-package com.example.padelrankings;
+package ru.mishgan325.padelrankings.entities;
 
-import android.util.Log;
-
-import java.sql.Struct;
 import java.util.ArrayList;
 
 public class GameSession {
@@ -27,7 +24,7 @@ public class GameSession {
         return null;
     }
 
-    void runGame(GameData game) {
+    public void runGame(GameData game) {
         Player teamAplayer1 = findPlayerByName(game.getTeam1player1());
         Player teamAplayer2 = findPlayerByName(game.getTeam1player2());
         Player teamBplayer1 = findPlayerByName(game.getTeam2player1());

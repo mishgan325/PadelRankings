@@ -1,4 +1,4 @@
-package com.example.padelrankings;
+package ru.mishgan325.padelrankings.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,6 +11,14 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import ru.mishgan325.padelrankings.utils.DatabaseHelper;
+import ru.mishgan325.padelrankings.entities.GameData;
+import ru.mishgan325.padelrankings.entities.GameSession;
+import ru.mishgan325.padelrankings.entities.Player;
+import ru.mishgan325.padelrankings.utils.PlayerDBHelper;
+import com.example.padelrankings.R;
+import ru.mishgan325.padelrankings.adapters.PlaySessionGamesAdapter;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -94,7 +102,7 @@ public class PlaySessionGamesActivity extends AppCompatActivity {
         updateGameData();
 
         for (int i = 0; i < games.size(); i++) {
-            Log.i("finalResults", games.get(i).returnData());
+            Log.i("finalResults", games.get(i).toString());
 
             if (!uniquePlayers(games.get(i)))
             {
@@ -140,7 +148,7 @@ public class PlaySessionGamesActivity extends AppCompatActivity {
         updateGameData();
 
         for (int i = 0; i < games.size(); i++) {
-            Log.d("tmp", games.get(i).returnData());
+            Log.d("tmp", games.get(i).toString());
         }
 
         games.add(new GameData(games.get(games.size()-1)));

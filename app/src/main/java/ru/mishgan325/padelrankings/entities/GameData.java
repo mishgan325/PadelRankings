@@ -1,4 +1,4 @@
-package com.example.padelrankings;
+package ru.mishgan325.padelrankings.entities;
 
 import java.io.Serializable;
 
@@ -80,7 +80,8 @@ public class GameData implements Serializable {
         return team2score;
     }
 
-    public String returnData() {
+    @Override
+    public String toString() {
         return team1player1 + " " + team1player2 + " " + team1score + " " + team2score + " " + team2player1 + " " + team2player2;
     }
 }

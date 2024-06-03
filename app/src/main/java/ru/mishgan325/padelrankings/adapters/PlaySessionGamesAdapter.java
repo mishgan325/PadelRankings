@@ -1,4 +1,4 @@
-package com.example.padelrankings;
+package ru.mishgan325.padelrankings.adapters;
 
 import android.content.Context;
 import android.util.Log;
@@ -12,6 +12,9 @@ import android.widget.Spinner;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import ru.mishgan325.padelrankings.entities.GameData;
+import com.example.padelrankings.R;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,7 +27,7 @@ public class PlaySessionGamesAdapter extends RecyclerView.Adapter<PlaySessionGam
 
     public PlaySessionGamesAdapter(Context context, List<GameData> games) {
         for (int i = 0; i < games.size(); i++) {
-            Log.i("Games data", games.get(i).returnData());
+            Log.i("Games data", games.get(i).toString());
         }
         this.context = context;
         this.games = games;

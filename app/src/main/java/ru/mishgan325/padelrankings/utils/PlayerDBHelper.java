@@ -1,4 +1,4 @@
-package com.example.padelrankings;
+package ru.mishgan325.padelrankings.utils;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -8,9 +8,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Environment;
 import android.util.Log;
 
-import java.io.BufferedReader;
+import ru.mishgan325.padelrankings.entities.PlayerPartnerInfo;
+
 import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;

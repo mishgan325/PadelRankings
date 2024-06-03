@@ -1,18 +1,19 @@
-package com.example.padelrankings;
+package ru.mishgan325.padelrankings.activities;
 
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import java.lang.reflect.Array;
+import ru.mishgan325.padelrankings.utils.DatabaseHelper;
+import ru.mishgan325.padelrankings.utils.PlayerDBHelper;
+import com.example.padelrankings.R;
+
 import java.util.ArrayList;
 
 public class PlayerActivity extends AppCompatActivity {

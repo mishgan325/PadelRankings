@@ -1,4 +1,4 @@
-package com.example.padelrankings;
+package ru.mishgan325.padelrankings.utils;
 
 import android.content.Context;
 
@@ -12,12 +12,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ModeHelperJSON {
+public class ModeHelper {
     private Context context;
     private JSONObject jsonData;
     private String fileName;
 
-    public ModeHelperJSON(Context context, String fileName) {
+    public ModeHelper(Context context, String fileName) {
         this.context = context;
         this.fileName = fileName;
         this.jsonData = new JSONObject();

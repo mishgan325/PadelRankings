@@ -1,4 +1,4 @@
-package com.example.padelrankings;
+package ru.mishgan325.padelrankings.activities;
 
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -12,6 +12,9 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import ru.mishgan325.padelrankings.utils.DatabaseHelper;
+import com.example.padelrankings.R;
 
 import java.util.ArrayList;
 import java.util.HashSet;

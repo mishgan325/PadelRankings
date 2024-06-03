@@ -1,16 +1,16 @@
-package com.example.padelrankings;
+package ru.mishgan325.padelrankings.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import ru.mishgan325.padelrankings.entities.PlayerPartnerInfo;
+import com.example.padelrankings.R;
 
 import java.util.ArrayList;
 
