@@ -12,7 +12,7 @@ import android.widget.EditText;
 
 import ru.mishgan325.padelrankings.utils.DatabaseHelper;
 import ru.mishgan325.padelrankings.utils.PlayerDBHelper;
-import com.example.padelrankings.R;
+import ru.mishgan325.padelrankings.R;
 
 import java.util.ArrayList;
 

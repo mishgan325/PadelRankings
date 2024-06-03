@@ -3,11 +3,11 @@ plugins {
 }
 
 android {
-    namespace 'com.example.padelrankings'
+    namespace 'ru.mishgan325.padelrankings'
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.example.padelrankings"
+        applicationId "ru.mishgan325.padelrankings"
         minSdk 24
         targetSdk 33
         versionCode 1

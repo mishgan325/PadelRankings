@@ -17,7 +17,7 @@ import ru.mishgan325.padelrankings.entities.GameData;
 import ru.mishgan325.padelrankings.entities.GameSession;
 import ru.mishgan325.padelrankings.entities.Player;
 import ru.mishgan325.padelrankings.utils.PlayerDBHelper;
-import com.example.padelrankings.R;
+import ru.mishgan325.padelrankings.R;
 import ru.mishgan325.padelrankings.adapters.PlaySessionGamesAdapter;
 
 import java.util.ArrayList;

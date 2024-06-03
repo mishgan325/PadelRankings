@@ -8,7 +8,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import ru.mishgan325.padelrankings.entities.Player;
-import com.example.padelrankings.R;
+import ru.mishgan325.padelrankings.R;
 
 import java.util.List;
 

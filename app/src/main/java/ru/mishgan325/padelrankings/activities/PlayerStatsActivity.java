@@ -11,7 +11,7 @@ import android.widget.TextView;
 import ru.mishgan325.padelrankings.utils.DatabaseHelper;
 import ru.mishgan325.padelrankings.utils.PlayerDBHelper;
 import ru.mishgan325.padelrankings.entities.PlayerPartnerInfo;
-import com.example.padelrankings.R;
+import ru.mishgan325.padelrankings.R;
 import ru.mishgan325.padelrankings.adapters.PlayerStatsAdapter;
 
 import java.util.ArrayList;

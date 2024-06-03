@@ -28,7 +28,7 @@ import ru.mishgan325.padelrankings.utils.DatabaseHelper;
 import ru.mishgan325.padelrankings.utils.FileHelper;
 import ru.mishgan325.padelrankings.entities.Player;
 import ru.mishgan325.padelrankings.utils.PlayerDBHelper;
-import com.example.padelrankings.R;
+import ru.mishgan325.padelrankings.R;
 import ru.mishgan325.padelrankings.adapters.ShowRankAdapter;
 
 public class ShowRankActivity extends AppCompatActivity {

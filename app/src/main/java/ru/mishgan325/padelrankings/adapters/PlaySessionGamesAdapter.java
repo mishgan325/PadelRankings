@@ -13,7 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import ru.mishgan325.padelrankings.entities.GameData;
-import com.example.padelrankings.R;
+import ru.mishgan325.padelrankings.R;
 
 import java.util.ArrayList;
 import java.util.List;
