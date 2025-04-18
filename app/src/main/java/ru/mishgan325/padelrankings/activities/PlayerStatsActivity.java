@@ -1,22 +1,25 @@
 package ru.mishgan325.padelrankings.activities;
 
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.os.Bundle;
-import android.widget.TextView;
-
-import ru.mishgan325.padelrankings.utils.DatabaseHelper;
-import ru.mishgan325.padelrankings.utils.PlayerDBHelper;
-import ru.mishgan325.padelrankings.entities.PlayerPartnerInfo;
-import ru.mishgan325.padelrankings.R;
-import ru.mishgan325.padelrankings.adapters.PlayerStatsAdapter;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+
+import ru.mishgan325.padelrankings.R;
+import ru.mishgan325.padelrankings.adapters.PlayerStatsAdapter;
+import ru.mishgan325.padelrankings.entities.PlayerPartnerInfo;
+import ru.mishgan325.padelrankings.utils.DatabaseHelper;
+import ru.mishgan325.padelrankings.utils.PlayerDBHelper;
 
 public class PlayerStatsActivity extends AppCompatActivity {
 
@@ -25,6 +28,7 @@ public class PlayerStatsActivity extends AppCompatActivity {
 
     ArrayList<PlayerPartnerInfo> stats;
     private RecyclerView recyclerViewStats;
+    private Button editButton;
     PlayerStatsAdapter adapter;
 
 
@@ -38,6 +42,7 @@ public class PlayerStatsActivity extends AppCompatActivity {
 
         title = findViewById(R.id.activity_player_stats_title);
         recyclerViewStats = findViewById(R.id.activity_player_stats_recyclerView);
+        editButton = findViewById(R.id.activity_player_stats_editButton);
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -75,5 +80,13 @@ public class PlayerStatsActivity extends AppCompatActivity {
 
         recyclerViewStats.addItemDecoration(new DividerItemDecoration(recyclerViewStats.getContext(), DividerItemDecoration.VERTICAL));
 
+        editButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(PlayerStatsActivity.this, PlayerActivity.class);
+                intent.putExtra("id", playerID);
+                startActivity(intent);
+            }
+        });
     }
 }
